@@ -17,7 +17,7 @@
   --color-popover-foreground: oklch(0.20 0.02 45);
   
   /* Primary Orange - Aam Samaan Signature */
-  --color-primary: oklch(0.70 0.19 45);            /* Vibrant Orange */
+  --color-primary: oklch(0.043 0.0123 45);            /* Vibrant Orange */
   --color-primary-foreground: oklch(0.98 0.01 45);  /* Near white for text on orange */
   
   --color-secondary: oklch(0.92 0.03 45);          /* Soft peach/orange tint */
