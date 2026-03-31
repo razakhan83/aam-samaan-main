@@ -84,7 +84,7 @@ async function sendOrderEmails({ order, customerName, userEmail }) {
   try {
     const adminRecipients = getConfiguredAdminEmails();
     const adminEmailResult = await resend.emails.send({
-      from: 'China Unique <onboarding@resend.dev>',
+      from: 'Aam Samaan <onboarding@resend.dev>',
       to: adminRecipients.length > 0 ? adminRecipients : ['123raza83@gmail.com'],
       subject: `New Order Received - ${customerName}`,
       html: generateOrderEmailHtml(order),
@@ -96,7 +96,7 @@ async function sendOrderEmails({ order, customerName, userEmail }) {
 
     if (userEmail) {
       const customerEmailResult = await resend.emails.send({
-        from: 'China Unique <onboarding@resend.dev>',
+        from: 'Aam Samaan <onboarding@resend.dev>',
         to: userEmail,
         subject: `Thank You for Your Order! - ${order.orderId}`,
         html: generateCustomerOrderConfirmationHtml(order),
@@ -347,7 +347,7 @@ export async function submitOrderAction(input) {
   });
 
   const lines = [
-    '*New Order from China Unique Store*',
+    '*New Order from Aam Samaan*',
     '',
     '*Customer Details*',
     `Name: ${customerName}`,

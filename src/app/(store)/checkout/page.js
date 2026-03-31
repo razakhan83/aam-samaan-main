@@ -7,7 +7,7 @@ import CheckoutClient from './CheckoutClient';
 
 export const metadata = {
   title: 'Checkout',
-  description: 'Complete your order at China Unique Store.',
+  description: 'Complete your order at Aam Samaan.',
 };
 
 export default function CheckoutPage() {

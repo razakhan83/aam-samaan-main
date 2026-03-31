@@ -300,7 +300,7 @@ async function getSettingsRaw() {
 
   return {
     _id: settings._id.toString(),
-    storeName: settings.storeName || 'China Unique Store',
+    storeName: settings.storeName || 'Aam Samaan',
     supportEmail: settings.supportEmail || '',
     businessAddress: settings.businessAddress || '',
     whatsappNumber: settings.whatsappNumber || '',
@@ -755,7 +755,7 @@ function getCatalogSiteUrl() {
     return configuredUrl.replace(/\/$/, '');
   }
 
-  return 'https://china-unique-items.vercel.app';
+  return 'https://Aam-Samaan-items.vercel.app';
 }
 
 function buildCatalogFeedItem(product, siteUrl, storeName) {
@@ -1361,7 +1361,7 @@ export async function getAdminSettings() {
 
   return {
     _id: settings._id.toString(),
-    storeName: settings.storeName || 'China Unique Store',
+    storeName: settings.storeName || 'Aam Samaan',
     supportEmail: settings.supportEmail || '',
     businessAddress: settings.businessAddress || '',
     whatsappNumber: settings.whatsappNumber || '',

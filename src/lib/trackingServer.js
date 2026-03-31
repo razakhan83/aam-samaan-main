@@ -7,7 +7,7 @@ import mongooseConnect from '@/lib/mongooseConnect';
 import Settings from '@/models/Settings';
 
 const SETTINGS_KEY = 'site-settings';
-const STORE_URL = 'https://china-unique-items.vercel.app';
+const STORE_URL = 'https://Aam-Samaan-items.vercel.app';
 const META_GRAPH_VERSION = 'v20.0';
 
 function sha256(value) {

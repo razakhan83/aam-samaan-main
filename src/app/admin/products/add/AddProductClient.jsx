@@ -259,7 +259,7 @@ export default function AddProduct() {
     "Add a focused product summary so search snippets look polished from day one.";
   const seoPreviewUrl =
     trimmedSeoCanonicalUrl ||
-    `https://china-unique-items.vercel.app/products/${fallbackSlug || "your-product"}`;
+    `https://Aam-Samaan-items.vercel.app/products/${fallbackSlug || "your-product"}`;
   const seoChecks = [
     { label: "SEO title", complete: trimmedSeoTitle.length >= 10 },
     { label: "Meta description", complete: trimmedSeoDescription.length >= 50 },
@@ -700,7 +700,7 @@ export default function AddProduct() {
                   value={seoCanonicalUrl}
                   onChange={(e) => setSeoCanonicalUrl(e.target.value)}
                   className="h-11 px-4"
-                  placeholder="https://china-unique-items.vercel.app/products/your-product"
+                  placeholder="https://Aam-Samaan-items.vercel.app/products/your-product"
                 />
               </div>
             </div>

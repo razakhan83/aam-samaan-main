@@ -11,7 +11,7 @@ import OrderDetailsClient from './OrderDetailsClient';
 import { Button } from '@/components/ui/button';
 
 export const metadata = {
-  title: 'Order Details | China Unique',
+  title: 'Order Details | Aam Samaan',
   description: 'View your order status and invoice.',
 };
 

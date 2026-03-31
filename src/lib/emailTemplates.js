@@ -163,7 +163,7 @@ export function generateOrderEmailHtml(order) {
         </div>
 
         <div class="footer">
-          <strong>China Unique - Home and Lifestyle Store</strong><br>
+          <strong>Aam Samaan - Home and Lifestyle Store</strong><br>
           Automated System Notification
         </div>
       </div>
@@ -292,7 +292,7 @@ export function generateCustomerOrderConfirmationHtml(order) {
           </div>
 
           <div class="footer">
-            <p style="margin: 0; font-weight: 700; color: var(--email-foreground);">China Unique - Home & Lifestyle</p>
+            <p style="margin: 0; font-weight: 700; color: var(--email-foreground);">Aam Samaan - Home & Lifestyle</p>
             <p style="margin: 4px 0 0;">Building beautiful homes together.</p>
             <div style="margin-top: 20px; font-size: 12px; color: var(--email-muted-foreground);">
               You received this email because you placed an order on chinaunique.pk

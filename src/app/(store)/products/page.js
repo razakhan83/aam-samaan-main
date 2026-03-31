@@ -35,20 +35,20 @@ export async function generateMetadata({ searchParams }) {
   if (search) {
     return {
       title: `Search results for "${search}"`,
-      description: `Browse matching China Unique Store products for "${search}".`,
+      description: `Browse matching Aam Samaan products for "${search}".`,
     };
   }
 
   if (category && category !== 'all') {
     return {
       title: category === 'new-arrivals' ? 'New Arrivals' : 'Products',
-      description: 'Browse products by category at China Unique Store.',
+      description: 'Browse products by category at Aam Samaan.',
     };
   }
 
   return {
     title: 'All Products',
-    description: 'Browse the complete China Unique Store catalog.',
+    description: 'Browse the complete Aam Samaan catalog.',
   };
 }
 

@@ -5,7 +5,7 @@ import SettingsClient from './SettingsClient';
 import { connection } from 'next/server';
 
 export const metadata = {
-  title: 'User Settings | China Unique',
+  title: 'User Settings | Aam Samaan',
   description: 'Manage your profile and delivery preferences.',
 };
 

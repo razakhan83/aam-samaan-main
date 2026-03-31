@@ -13,7 +13,7 @@ import WhatsAppIcon from '@/components/icons/WhatsAppIcon';
 import { toast } from 'sonner';
 import { buildProductWhatsAppMessage, createWhatsAppUrl } from '@/lib/whatsapp';
 
-export default function ProductActions({ product, whatsappNumber = '', storeName = 'China Unique Store' }) {
+export default function ProductActions({ product, whatsappNumber = '', storeName = 'Aam Samaan' }) {
     const { addToCart } = useCartActions();
     const [isAdding, setIsAdding] = useState(false);
     const [didJustAdd, setDidJustAdd] = useState(false);

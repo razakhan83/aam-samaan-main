@@ -229,11 +229,9 @@ function NavbarContent({
         </Button>
 
         <Link href="/" className="flex min-w-0 items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-            <Store className="size-5" />
-          </div>
+          <img src="/logo.jpg" alt="Aam Samaan" className="h-10 w-auto object-contain" />
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold uppercase tracking-[0.12em] text-primary">China Unique</p>
+            <p className="truncate text-sm font-semibold uppercase tracking-[0.12em] text-primary">Aam Samaan</p>
             <p className="truncate text-xs text-muted-foreground">Home and lifestyle store</p>
           </div>
         </Link>

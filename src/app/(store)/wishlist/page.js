@@ -2,7 +2,7 @@ import { connection } from 'next/server';
 import WishlistClient from './WishlistClient';
 
 export const metadata = {
-  title: 'My Wishlist | China Unique',
+  title: 'My Wishlist | Aam Samaan',
   description: 'Review your saved products and add them to cart anytime.',
 };
 

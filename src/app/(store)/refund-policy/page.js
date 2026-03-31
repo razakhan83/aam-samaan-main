@@ -2,7 +2,7 @@ import { RotateCcw, ShieldCheck, AlertCircle, ShoppingBag, Clock } from 'lucide-
 
 export const metadata = {
   title: 'Refund Policy',
-  description: 'Our 7-day return and exchange policy for damaged or incorrect products at China Unique Store.',
+  description: 'Our 7-day return and exchange policy for damaged or incorrect products at Aam Samaan.',
 };
 
 export default function RefundPolicyPage() {

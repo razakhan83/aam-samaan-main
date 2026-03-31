@@ -26,14 +26,14 @@ import { getCategoryColor } from '@/lib/categoryColors';
 import { getProductCategories } from '@/lib/productCategories';
 
 const formatPrice = (raw) => `Rs. ${Number(raw || 0).toLocaleString('en-PK')}`;
-const siteUrl = process.env.NEXTAUTH_URL || 'https://china-unique-items.vercel.app';
+const siteUrl = process.env.NEXTAUTH_URL || 'https://Aam-Samaan-items.vercel.app';
 
 function getProductUrl(product) {
   return `${siteUrl}/products/${product.slug || product._id}`;
 }
 
 function getProductDescription(product) {
-  return product.seoDescription || product.Description || `Buy ${product.Name} from China Unique Store.`;
+  return product.seoDescription || product.Description || `Buy ${product.Name} from Aam Samaan.`;
 }
 
 function getProductTitle(product) {
@@ -88,7 +88,7 @@ function getProductJsonLd({ product, reviewSummary }) {
     keywords: keywords.join(', '),
     brand: {
       '@type': 'Brand',
-      name: 'China Unique Store',
+      name: 'Aam Samaan',
     },
     offers: {
       '@type': 'Offer',
@@ -162,7 +162,7 @@ export async function generateMetadata({ params }) {
       description: shareDescription,
       type: 'website',
       url: productUrl,
-      siteName: 'China Unique Store',
+      siteName: 'Aam Samaan',
       images: [
         {
           url: productImage,
@@ -341,7 +341,7 @@ async function ProductHeroSection({ slugPromise }) {
             <div className="text-[15px] leading-relaxed text-muted-foreground">
               <p>
                 {product.Description ||
-                  'Discover the perfect addition to your collection. This premium item from China Unique Store is crafted with quality and elegance in mind.'}
+                  'Discover the perfect addition to your collection. This premium item from Aam Samaan is crafted with quality and elegance in mind.'}
               </p>
             </div>
 

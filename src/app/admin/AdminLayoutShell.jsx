@@ -65,7 +65,7 @@ export default function AdminLayoutShell({ children, sessionUser }) {
           <Store className="size-5" />
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em]">China Unique</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em]">Aam Samaan</p>
           <p className="text-xs text-primary-foreground/70">Admin workspace</p>
         </div>
       </div>

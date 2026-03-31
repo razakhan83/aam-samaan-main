@@ -42,7 +42,7 @@ const formatPrice = (raw) => {
 const formatPriceLabel = (raw) => `Rs. ${formatPrice(raw).toLocaleString('en-PK')}`;
 const EXIT_ANIMATION_MS = 180;
 
-export default function CartDrawer({ whatsappNumber = '', storeName = 'China Unique Store' }) {
+export default function CartDrawer({ whatsappNumber = '', storeName = 'Aam Samaan' }) {
   const { cart } = useCartItems();
   const { isCartOpen } = useCartUi();
   const { updateQuantity, removeFromCart, clearCart, setIsCartOpen } = useCartActions();

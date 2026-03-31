@@ -1,4 +1,4 @@
-# China Unique Items Technical Manual
+# Aam Samaan Technical Manual
 
 ## 1. Project Overview
 
@@ -10,7 +10,7 @@ This project is a full-stack ecommerce application built on the Next.js App Rout
 - server actions for privileged write operations
 - tag-based cache invalidation for storefront freshness
 
-The codebase is organized under [`src/app`](/Users/razak/China-Unique-Items/src/app), with a clear split between:
+The codebase is organized under [`src/app`](/Users/razak/Aam-Samaan-Items/src/app), with a clear split between:
 
 - `src/app/(store)` for the public storefront
 - `src/app/admin` for the internal admin workspace
@@ -22,14 +22,14 @@ The current implementation behaves like a headless-lite commerce system: catalog
 
 ### 2.1 Core Stack
 
-Observed from [`package.json`](/Users/razak/China-Unique-Items/package.json):
+Observed from [`package.json`](/Users/razak/Aam-Samaan-Items/package.json):
 
 - Framework: `next@16.2.1`
 - React: `react@19.2.4`, `react-dom@19.2.4`
 - Authentication: `next-auth@4.24.13`
 - Database: MongoDB + `mongoose@9.3.1`
-- Styling: Tailwind CSS v4 + CSS variables in [`globals.css`](/Users/razak/China-Unique-Items/src/app/globals.css)
-- UI primitives: Base UI, Radix, shadcn-style wrappers in [`src/components/ui`](/Users/razak/China-Unique-Items/src/components/ui)
+- Styling: Tailwind CSS v4 + CSS variables in [`globals.css`](/Users/razak/Aam-Samaan-Items/src/app/globals.css)
+- UI primitives: Base UI, Radix, shadcn-style wrappers in [`src/components/ui`](/Users/razak/Aam-Samaan-Items/src/components/ui)
 - Notifications: `sonner`
 - Image/media: Cloudinary
 - Email: Resend
@@ -39,7 +39,7 @@ Observed from [`package.json`](/Users/razak/China-Unique-Items/package.json):
 
 ### 2.2 Next.js Configuration
 
-Observed in [`next.config.mjs`](/Users/razak/China-Unique-Items/next.config.mjs):
+Observed in [`next.config.mjs`](/Users/razak/Aam-Samaan-Items/next.config.mjs):
 
 - `cacheComponents: true`
 - custom `cacheLife.foreverish`
@@ -59,18 +59,18 @@ Implication:
 
 #### Root Layer
 
-Key files under [`src/app`](/Users/razak/China-Unique-Items/src/app):
+Key files under [`src/app`](/Users/razak/Aam-Samaan-Items/src/app):
 
-- [`layout.js`](/Users/razak/China-Unique-Items/src/app/layout.js): root HTML shell, metadata, tracking script injection, toaster
-- [`loading.js`](/Users/razak/China-Unique-Items/src/app/loading.js): app-wide loading fallback
-- [`error.js`](/Users/razak/China-Unique-Items/src/app/error.js): route error boundary
-- [`global-error.js`](/Users/razak/China-Unique-Items/src/app/global-error.js): root error boundary
-- [`not-found.js`](/Users/razak/China-Unique-Items/src/app/not-found.js): global 404
-- [`actions.js`](/Users/razak/China-Unique-Items/src/app/actions.js): server actions
+- [`layout.js`](/Users/razak/Aam-Samaan-Items/src/app/layout.js): root HTML shell, metadata, tracking script injection, toaster
+- [`loading.js`](/Users/razak/Aam-Samaan-Items/src/app/loading.js): app-wide loading fallback
+- [`error.js`](/Users/razak/Aam-Samaan-Items/src/app/error.js): route error boundary
+- [`global-error.js`](/Users/razak/Aam-Samaan-Items/src/app/global-error.js): root error boundary
+- [`not-found.js`](/Users/razak/Aam-Samaan-Items/src/app/not-found.js): global 404
+- [`actions.js`](/Users/razak/Aam-Samaan-Items/src/app/actions.js): server actions
 
 #### Storefront Route Group
 
-Under [`src/app/(store)`](/Users/razak/China-Unique-Items/src/app/(store)):
+Under [`src/app/(store)`](/Users/razak/Aam-Samaan-Items/src/app/(store)):
 
 - `/`
 - `/products`
@@ -87,7 +87,7 @@ Under [`src/app/(store)`](/Users/razak/China-Unique-Items/src/app/(store)):
   - `/shipping-policy`
 - `/auth/signin`
 
-Store layout is defined in [`src/app/(store)/layout.js`](/Users/razak/China-Unique-Items/src/app/(store)/layout.js). Provider nesting is:
+Store layout is defined in [`src/app/(store)/layout.js`](/Users/razak/Aam-Samaan-Items/src/app/(store)/layout.js). Provider nesting is:
 
 1. `AuthProvider`
 2. `CartProvider`
@@ -99,7 +99,7 @@ This is the main storefront runtime composition.
 
 #### Admin Route Tree
 
-Under [`src/app/admin`](/Users/razak/China-Unique-Items/src/app/admin):
+Under [`src/app/admin`](/Users/razak/Aam-Samaan-Items/src/app/admin):
 
 - `/admin`
 - `/admin/login`
@@ -117,9 +117,9 @@ Under [`src/app/admin`](/Users/razak/China-Unique-Items/src/app/admin):
 
 Admin layout:
 
-- [`src/app/admin/layout.js`](/Users/razak/China-Unique-Items/src/app/admin/layout.js) fetches session and renders [`AdminLayoutShell.jsx`](/Users/razak/China-Unique-Items/src/app/admin/AdminLayoutShell.jsx)
-- route protection is enforced primarily by [`src/proxy.js`](/Users/razak/China-Unique-Items/src/proxy.js)
-- some pages also call [`requireAdmin()`](/Users/razak/China-Unique-Items/src/lib/requireAdmin.js) server-side
+- [`src/app/admin/layout.js`](/Users/razak/Aam-Samaan-Items/src/app/admin/layout.js) fetches session and renders [`AdminLayoutShell.jsx`](/Users/razak/Aam-Samaan-Items/src/app/admin/AdminLayoutShell.jsx)
+- route protection is enforced primarily by [`src/proxy.js`](/Users/razak/Aam-Samaan-Items/src/proxy.js)
+- some pages also call [`requireAdmin()`](/Users/razak/Aam-Samaan-Items/src/lib/requireAdmin.js) server-side
 
 ### 2.4 Rendering Model
 
@@ -134,7 +134,7 @@ This follows the Next.js guidance that browser APIs such as `localStorage`, even
 
 ### 2.5 Caching Strategy
 
-The shared data layer is [`src/lib/data.js`](/Users/razak/China-Unique-Items/src/lib/data.js). It centralizes read models such as:
+The shared data layer is [`src/lib/data.js`](/Users/razak/Aam-Samaan-Items/src/lib/data.js). It centralizes read models such as:
 
 - `getStoreSettings`
 - `getStoreCategories`
@@ -166,11 +166,11 @@ Important cache tags visible in code:
 
 ## 3. Database Schema
 
-The app uses MongoDB collections via Mongoose models in [`src/models`](/Users/razak/China-Unique-Items/src/models).
+The app uses MongoDB collections via Mongoose models in [`src/models`](/Users/razak/Aam-Samaan-Items/src/models).
 
 ### 3.1 `Product`
 
-Defined in [`Product.js`](/Users/razak/China-Unique-Items/src/models/Product.js)
+Defined in [`Product.js`](/Users/razak/Aam-Samaan-Items/src/models/Product.js)
 
 Fields:
 
@@ -198,7 +198,7 @@ Relationships:
 
 ### 3.2 `Category`
 
-Defined in [`Category.js`](/Users/razak/China-Unique-Items/src/models/Category.js)
+Defined in [`Category.js`](/Users/razak/Aam-Samaan-Items/src/models/Category.js)
 
 Fields:
 
@@ -218,7 +218,7 @@ Relationships:
 
 ### 3.3 `Order`
 
-Defined in [`Order.js`](/Users/razak/China-Unique-Items/src/models/Order.js)
+Defined in [`Order.js`](/Users/razak/Aam-Samaan-Items/src/models/Order.js)
 
 Fields:
 
@@ -251,7 +251,7 @@ Relationships:
 
 ### 3.4 `User`
 
-Defined in [`User.js`](/Users/razak/China-Unique-Items/src/models/User.js)
+Defined in [`User.js`](/Users/razak/Aam-Samaan-Items/src/models/User.js)
 
 Fields:
 
@@ -275,7 +275,7 @@ Relationships:
 
 ### 3.5 `Review`
 
-Defined in [`Review.js`](/Users/razak/China-Unique-Items/src/models/Review.js)
+Defined in [`Review.js`](/Users/razak/Aam-Samaan-Items/src/models/Review.js)
 
 Fields:
 
@@ -289,7 +289,7 @@ Fields:
 
 ### 3.6 `Settings`
 
-Defined in [`Settings.js`](/Users/razak/China-Unique-Items/src/models/Settings.js)
+Defined in [`Settings.js`](/Users/razak/Aam-Samaan-Items/src/models/Settings.js)
 
 Singleton document keyed by `singletonKey = 'site-settings'`
 
@@ -323,7 +323,7 @@ Fields:
 
 ### 3.7 `CoverPhoto`
 
-Defined in [`CoverPhoto.js`](/Users/razak/China-Unique-Items/src/models/CoverPhoto.js)
+Defined in [`CoverPhoto.js`](/Users/razak/Aam-Samaan-Items/src/models/CoverPhoto.js)
 
 Singleton document keyed by `singletonKey = 'home-cover-photos'`
 
@@ -338,7 +338,7 @@ Fields:
 
 ### 3.8 `Notification`
 
-Defined in [`Notification.js`](/Users/razak/China-Unique-Items/src/models/Notification.js)
+Defined in [`Notification.js`](/Users/razak/Aam-Samaan-Items/src/models/Notification.js)
 
 Fields:
 
@@ -353,7 +353,7 @@ Used for admin notification center.
 
 ### 3.9 `OrderLog`
 
-Defined in [`OrderLog.js`](/Users/razak/China-Unique-Items/src/models/OrderLog.js)
+Defined in [`OrderLog.js`](/Users/razak/Aam-Samaan-Items/src/models/OrderLog.js)
 
 Fields:
 
@@ -370,7 +370,7 @@ Fields:
 
 ### 4.1 Provider Setup
 
-Configured in [`src/lib/auth.js`](/Users/razak/China-Unique-Items/src/lib/auth.js)
+Configured in [`src/lib/auth.js`](/Users/razak/Aam-Samaan-Items/src/lib/auth.js)
 
 Providers:
 
@@ -383,7 +383,7 @@ When a user signs in with Google:
 
 1. `signIn` callback runs
 2. MongoDB connection is opened
-3. email is normalized via [`normalizeEmail`](C:/Users/razak/China-Unique-Items/src/lib/admin.js)
+3. email is normalized via [`normalizeEmail`](C:/Users/razak/Aam-Samaan-Items/src/lib/admin.js)
 4. existing user is checked
 5. if `disabled === true`, sign-in is blocked
 6. `User` document is upserted with name/image/email
@@ -418,16 +418,16 @@ Session callback:
 
 ### 4.6 Provider Wiring in React
 
-Client session context is mounted via [`AuthProvider.jsx`](/Users/razak/China-Unique-Items/src/components/AuthProvider.jsx), which is a thin `SessionProvider` wrapper.
+Client session context is mounted via [`AuthProvider.jsx`](/Users/razak/Aam-Samaan-Items/src/components/AuthProvider.jsx), which is a thin `SessionProvider` wrapper.
 
 ### 4.7 Route Protection
 
 Two protection layers are in use:
 
-- [`src/proxy.js`](/Users/razak/China-Unique-Items/src/proxy.js)
+- [`src/proxy.js`](/Users/razak/Aam-Samaan-Items/src/proxy.js)
   - redirects unauthenticated/non-admin users away from `/admin`
   - redirects unauthenticated users away from `/orders`
-- [`requireAdmin()`](/Users/razak/China-Unique-Items/src/lib/requireAdmin.js)
+- [`requireAdmin()`](/Users/razak/Aam-Samaan-Items/src/lib/requireAdmin.js)
   - server-side redirect to `/admin/login`
 
 ## 5. Backend & API Logic
@@ -436,17 +436,17 @@ Two protection layers are in use:
 
 The backend is split across:
 
-- route handlers in [`src/app/api`](/Users/razak/China-Unique-Items/src/app/api)
-- server actions in [`actions.js`](/Users/razak/China-Unique-Items/src/app/actions.js)
-- data read layer in [`src/lib/data.js`](/Users/razak/China-Unique-Items/src/lib/data.js)
+- route handlers in [`src/app/api`](/Users/razak/Aam-Samaan-Items/src/app/api)
+- server actions in [`actions.js`](/Users/razak/Aam-Samaan-Items/src/app/actions.js)
+- data read layer in [`src/lib/data.js`](/Users/razak/Aam-Samaan-Items/src/lib/data.js)
 - low-level helpers:
-  - [`mongooseConnect.js`](/Users/razak/China-Unique-Items/src/lib/mongooseConnect.js)
-  - [`auth.js`](/Users/razak/China-Unique-Items/src/lib/auth.js)
-  - [`trackingServer.js`](/Users/razak/China-Unique-Items/src/lib/trackingServer.js)
+  - [`mongooseConnect.js`](/Users/razak/Aam-Samaan-Items/src/lib/mongooseConnect.js)
+  - [`auth.js`](/Users/razak/Aam-Samaan-Items/src/lib/auth.js)
+  - [`trackingServer.js`](/Users/razak/Aam-Samaan-Items/src/lib/trackingServer.js)
 
 ### 5.2 Server Actions
 
-Defined in [`src/app/actions.js`](/Users/razak/China-Unique-Items/src/app/actions.js)
+Defined in [`src/app/actions.js`](/Users/razak/Aam-Samaan-Items/src/app/actions.js)
 
 - `toggleProductLiveAction(productId, nextValue)`
 - `deleteProductAction(productId)`
@@ -568,9 +568,9 @@ Observed patterns across routes and actions:
 
 Primary files:
 
-- [`src/lib/trackingServer.js`](/Users/razak/China-Unique-Items/src/lib/trackingServer.js)
-- [`src/app/api/tracking/meta/route.js`](/Users/razak/China-Unique-Items/src/app/api/tracking/meta/route.js)
-- [`src/lib/clientTracking.js`](/Users/razak/China-Unique-Items/src/lib/clientTracking.js)
+- [`src/lib/trackingServer.js`](/Users/razak/Aam-Samaan-Items/src/lib/trackingServer.js)
+- [`src/app/api/tracking/meta/route.js`](/Users/razak/Aam-Samaan-Items/src/app/api/tracking/meta/route.js)
+- [`src/lib/clientTracking.js`](/Users/razak/Aam-Samaan-Items/src/lib/clientTracking.js)
 
 #### Settings dependency
 
@@ -636,13 +636,13 @@ Purchase also has a dedicated server dispatch in `sendPurchaseTrackingEvents(...
 - uses `tiktokAccessToken`
 - sends to TikTok business API
 
-Browser TikTok script bootstrap is injected in [`TrackingScripts.jsx`](/Users/razak/China-Unique-Items/src/components/TrackingScripts.jsx).
+Browser TikTok script bootstrap is injected in [`TrackingScripts.jsx`](/Users/razak/Aam-Samaan-Items/src/components/TrackingScripts.jsx).
 
 ## 6. Frontend & UX Architecture
 
 ### 6.1 Global Providers & Data Flow
 
-Storefront provider tree from [`src/app/(store)/layout.js`](/Users/razak/China-Unique-Items/src/app/(store)/layout.js):
+Storefront provider tree from [`src/app/(store)/layout.js`](/Users/razak/Aam-Samaan-Items/src/app/(store)/layout.js):
 
 1. `SessionProvider`
 2. `CartProvider`
@@ -652,7 +652,7 @@ Storefront provider tree from [`src/app/(store)/layout.js`](/Users/razak/China-U
 
 ### 6.2 Cart State
 
-Defined in [`src/context/CartContext.jsx`](/Users/razak/China-Unique-Items/src/context/CartContext.jsx)
+Defined in [`src/context/CartContext.jsx`](/Users/razak/Aam-Samaan-Items/src/context/CartContext.jsx)
 
 State:
 
@@ -678,11 +678,11 @@ Core actions:
 
 Cross-system effect:
 
-- `addToCart()` now triggers `AddToCart` browser + CAPI tracking through [`trackAddToCartEvent`](C:/Users/razak/China-Unique-Items/src/lib/clientTracking.js)
+- `addToCart()` now triggers `AddToCart` browser + CAPI tracking through [`trackAddToCartEvent`](C:/Users/razak/Aam-Samaan-Items/src/lib/clientTracking.js)
 
 ### 6.3 Wishlist State
 
-Defined in [`src/context/WishlistContext.jsx`](/Users/razak/China-Unique-Items/src/context/WishlistContext.jsx)
+Defined in [`src/context/WishlistContext.jsx`](/Users/razak/Aam-Samaan-Items/src/context/WishlistContext.jsx)
 
 State:
 
@@ -751,7 +751,7 @@ Observed responsive rules:
 
 #### Cart Drawer
 
-In [`CartDrawer.jsx`](/Users/razak/China-Unique-Items/src/components/CartDrawer.jsx):
+In [`CartDrawer.jsx`](/Users/razak/Aam-Samaan-Items/src/components/CartDrawer.jsx):
 
 - mobile default:
   - `w-screen`
@@ -769,7 +769,7 @@ Result:
 
 #### Mobile Menu / Sidebar
 
-In [`Navbar.jsx`](/Users/razak/China-Unique-Items/src/components/Navbar.jsx):
+In [`Navbar.jsx`](/Users/razak/Aam-Samaan-Items/src/components/Navbar.jsx):
 
 - mobile default:
   - `w-screen`
@@ -786,7 +786,7 @@ Result:
 
 #### Product Grid
 
-In [`src/app/(store)/products/page.js`](/Users/razak/China-Unique-Items/src/app/(store)/products/page.js):
+In [`src/app/(store)/products/page.js`](/Users/razak/Aam-Samaan-Items/src/app/(store)/products/page.js):
 
 - mobile: `grid-cols-2`
 - tablet: `md:grid-cols-3`
@@ -794,7 +794,7 @@ In [`src/app/(store)/products/page.js`](/Users/razak/China-Unique-Items/src/app/
 
 #### Hero Assets
 
-In [`HeroSlider.jsx`](/Users/razak/China-Unique-Items/src/components/HeroSlider.jsx):
+In [`HeroSlider.jsx`](/Users/razak/Aam-Samaan-Items/src/components/HeroSlider.jsx):
 
 - `<768`: mobile asset
 - `768-1023`: tablet asset
@@ -806,7 +806,7 @@ There is no Framer Motion in the current implementation.
 
 The animation system is CSS-first and component-local:
 
-- custom keyframes in [`globals.css`](/Users/razak/China-Unique-Items/src/app/globals.css)
+- custom keyframes in [`globals.css`](/Users/razak/Aam-Samaan-Items/src/app/globals.css)
 - `tw-animate-css`
 - Base UI dialog/sheet transition data attributes
 - CSS transitions using carefully scoped properties
@@ -861,19 +861,19 @@ Patterns:
 
 Key storefront components:
 
-- [`HeroSlider.jsx`](/Users/razak/China-Unique-Items/src/components/HeroSlider.jsx)
-- [`CategoryIconCarousel.jsx`](/Users/razak/China-Unique-Items/src/components/CategoryIconCarousel.jsx)
-- [`CategoryProductSlider.jsx`](/Users/razak/China-Unique-Items/src/components/CategoryProductSlider.jsx)
-- [`ProductCard.jsx`](/Users/razak/China-Unique-Items/src/components/ProductCard.jsx)
-- [`ProductActions.jsx`](/Users/razak/China-Unique-Items/src/components/ProductActions.jsx)
-- [`ProductGallery.jsx`](/Users/razak/China-Unique-Items/src/components/ProductGallery.jsx)
-- [`ProductReviewsClient.jsx`](/Users/razak/China-Unique-Items/src/components/ProductReviewsClient.jsx)
+- [`HeroSlider.jsx`](/Users/razak/Aam-Samaan-Items/src/components/HeroSlider.jsx)
+- [`CategoryIconCarousel.jsx`](/Users/razak/Aam-Samaan-Items/src/components/CategoryIconCarousel.jsx)
+- [`CategoryProductSlider.jsx`](/Users/razak/Aam-Samaan-Items/src/components/CategoryProductSlider.jsx)
+- [`ProductCard.jsx`](/Users/razak/Aam-Samaan-Items/src/components/ProductCard.jsx)
+- [`ProductActions.jsx`](/Users/razak/Aam-Samaan-Items/src/components/ProductActions.jsx)
+- [`ProductGallery.jsx`](/Users/razak/Aam-Samaan-Items/src/components/ProductGallery.jsx)
+- [`ProductReviewsClient.jsx`](/Users/razak/Aam-Samaan-Items/src/components/ProductReviewsClient.jsx)
 
 ## 7. Admin Engine & CMS
 
 ### 7.1 Admin Shell
 
-[`AdminLayoutShell.jsx`](/Users/razak/China-Unique-Items/src/app/admin/AdminLayoutShell.jsx) provides:
+[`AdminLayoutShell.jsx`](/Users/razak/Aam-Samaan-Items/src/app/admin/AdminLayoutShell.jsx) provides:
 
 - sticky top bar
 - desktop sidebar
@@ -884,7 +884,7 @@ Key storefront components:
 
 ### 7.2 Dashboard
 
-Dashboard page at [`src/app/admin/page.js`](/Users/razak/China-Unique-Items/src/app/admin/page.js)
+Dashboard page at [`src/app/admin/page.js`](/Users/razak/Aam-Samaan-Items/src/app/admin/page.js)
 
 Capabilities:
 
@@ -1028,7 +1028,7 @@ Observed indicators:
 
 - no `vercel.json` present
 - project is fully compatible with Vercel’s default Next.js deployment flow
-- root metadata defaults reference `https://china-unique-items.vercel.app`
+- root metadata defaults reference `https://Aam-Samaan-items.vercel.app`
 
 Current deployment assumption:
 
@@ -1130,49 +1130,49 @@ For long-term maintainability, the current codebase would benefit from:
 
 ### App & Layout
 
-- [`src/app/layout.js`](/Users/razak/China-Unique-Items/src/app/layout.js)
-- [`src/app/(store)/layout.js`](/Users/razak/China-Unique-Items/src/app/(store)/layout.js)
-- [`src/app/admin/layout.js`](/Users/razak/China-Unique-Items/src/app/admin/layout.js)
+- [`src/app/layout.js`](/Users/razak/Aam-Samaan-Items/src/app/layout.js)
+- [`src/app/(store)/layout.js`](/Users/razak/Aam-Samaan-Items/src/app/(store)/layout.js)
+- [`src/app/admin/layout.js`](/Users/razak/Aam-Samaan-Items/src/app/admin/layout.js)
 
 ### Data & DB
 
-- [`src/lib/data.js`](/Users/razak/China-Unique-Items/src/lib/data.js)
-- [`src/lib/mongooseConnect.js`](/Users/razak/China-Unique-Items/src/lib/mongooseConnect.js)
-- [`src/models`](/Users/razak/China-Unique-Items/src/models)
+- [`src/lib/data.js`](/Users/razak/Aam-Samaan-Items/src/lib/data.js)
+- [`src/lib/mongooseConnect.js`](/Users/razak/Aam-Samaan-Items/src/lib/mongooseConnect.js)
+- [`src/models`](/Users/razak/Aam-Samaan-Items/src/models)
 
 ### Auth & Access
 
-- [`src/lib/auth.js`](/Users/razak/China-Unique-Items/src/lib/auth.js)
-- [`src/lib/requireAdmin.js`](/Users/razak/China-Unique-Items/src/lib/requireAdmin.js)
-- [`src/proxy.js`](/Users/razak/China-Unique-Items/src/proxy.js)
+- [`src/lib/auth.js`](/Users/razak/Aam-Samaan-Items/src/lib/auth.js)
+- [`src/lib/requireAdmin.js`](/Users/razak/Aam-Samaan-Items/src/lib/requireAdmin.js)
+- [`src/proxy.js`](/Users/razak/Aam-Samaan-Items/src/proxy.js)
 
 ### State
 
-- [`src/context/CartContext.jsx`](/Users/razak/China-Unique-Items/src/context/CartContext.jsx)
-- [`src/context/WishlistContext.jsx`](/Users/razak/China-Unique-Items/src/context/WishlistContext.jsx)
+- [`src/context/CartContext.jsx`](/Users/razak/Aam-Samaan-Items/src/context/CartContext.jsx)
+- [`src/context/WishlistContext.jsx`](/Users/razak/Aam-Samaan-Items/src/context/WishlistContext.jsx)
 
 ### Tracking
 
-- [`src/components/TrackingScripts.jsx`](/Users/razak/China-Unique-Items/src/components/TrackingScripts.jsx)
-- [`src/components/TrackingPageView.jsx`](/Users/razak/China-Unique-Items/src/components/TrackingPageView.jsx)
-- [`src/components/ProductViewTracking.jsx`](/Users/razak/China-Unique-Items/src/components/ProductViewTracking.jsx)
-- [`src/lib/clientTracking.js`](/Users/razak/China-Unique-Items/src/lib/clientTracking.js)
-- [`src/lib/trackingServer.js`](/Users/razak/China-Unique-Items/src/lib/trackingServer.js)
-- [`src/app/api/tracking/meta/route.js`](/Users/razak/China-Unique-Items/src/app/api/tracking/meta/route.js)
+- [`src/components/TrackingScripts.jsx`](/Users/razak/Aam-Samaan-Items/src/components/TrackingScripts.jsx)
+- [`src/components/TrackingPageView.jsx`](/Users/razak/Aam-Samaan-Items/src/components/TrackingPageView.jsx)
+- [`src/components/ProductViewTracking.jsx`](/Users/razak/Aam-Samaan-Items/src/components/ProductViewTracking.jsx)
+- [`src/lib/clientTracking.js`](/Users/razak/Aam-Samaan-Items/src/lib/clientTracking.js)
+- [`src/lib/trackingServer.js`](/Users/razak/Aam-Samaan-Items/src/lib/trackingServer.js)
+- [`src/app/api/tracking/meta/route.js`](/Users/razak/Aam-Samaan-Items/src/app/api/tracking/meta/route.js)
 
 ### Admin
 
-- [`src/app/admin`](/Users/razak/China-Unique-Items/src/app/admin)
-- [`src/app/api/admin`](/Users/razak/China-Unique-Items/src/app/api/admin)
+- [`src/app/admin`](/Users/razak/Aam-Samaan-Items/src/app/admin)
+- [`src/app/api/admin`](/Users/razak/Aam-Samaan-Items/src/app/api/admin)
 
 ### Storefront UX
 
-- [`src/components/LayoutWrapper.jsx`](/Users/razak/China-Unique-Items/src/components/LayoutWrapper.jsx)
-- [`src/components/Navbar.jsx`](/Users/razak/China-Unique-Items/src/components/Navbar.jsx)
-- [`src/components/CartDrawer.jsx`](/Users/razak/China-Unique-Items/src/components/CartDrawer.jsx)
-- [`src/components/ProductCard.jsx`](/Users/razak/China-Unique-Items/src/components/ProductCard.jsx)
-- [`src/components/ProductActions.jsx`](/Users/razak/China-Unique-Items/src/components/ProductActions.jsx)
-- [`src/app/globals.css`](/Users/razak/China-Unique-Items/src/app/globals.css)
+- [`src/components/LayoutWrapper.jsx`](/Users/razak/Aam-Samaan-Items/src/components/LayoutWrapper.jsx)
+- [`src/components/Navbar.jsx`](/Users/razak/Aam-Samaan-Items/src/components/Navbar.jsx)
+- [`src/components/CartDrawer.jsx`](/Users/razak/Aam-Samaan-Items/src/components/CartDrawer.jsx)
+- [`src/components/ProductCard.jsx`](/Users/razak/Aam-Samaan-Items/src/components/ProductCard.jsx)
+- [`src/components/ProductActions.jsx`](/Users/razak/Aam-Samaan-Items/src/components/ProductActions.jsx)
+- [`src/app/globals.css`](/Users/razak/Aam-Samaan-Items/src/app/globals.css)
 
 ---
 

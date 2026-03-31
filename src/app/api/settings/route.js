@@ -46,7 +46,7 @@ export async function GET() {
             success: true,
             data: {
                 _id: settings._id,
-                storeName: settings.storeName || 'China Unique Store',
+                storeName: settings.storeName || 'Aam Samaan',
                 supportEmail: settings.supportEmail || '',
                 businessAddress: settings.businessAddress || '',
                 whatsappNumber: settings.whatsappNumber || '',

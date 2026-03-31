@@ -14,21 +14,21 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = process.env.NEXTAUTH_URL || 'https://china-unique-items.vercel.app';
+const siteUrl = process.env.NEXTAUTH_URL || 'https://Aam-Samaan-items.vercel.app';
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'China Unique Store',
-    template: '%s | China Unique Store',
+    default: 'Aam Samaan',
+    template: '%s | Aam Samaan',
   },
   description: 'Premium kitchenware, home decor, and lifestyle products for modern Pakistani homes.',
   openGraph: {
-    title: 'China Unique Store',
+    title: 'Aam Samaan',
     description: 'Premium kitchenware, home decor, and lifestyle products for modern Pakistani homes.',
     type: 'website',
     url: siteUrl,
-    siteName: 'China Unique Store',
+    siteName: 'Aam Samaan',
   },
   robots: {
     index: true,

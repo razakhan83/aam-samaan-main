@@ -330,7 +330,7 @@ export default function AdminSettingsClient({ initialSettings, isConfiguredAdmin
             <Input
               value={form.storeName}
               onChange={(event) => handleChange('storeName', event.target.value)}
-              placeholder="China Unique Store"
+              placeholder="Aam Samaan"
             />
           </div>
           <div>

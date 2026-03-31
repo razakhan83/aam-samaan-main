@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export const metadata = {
   title: 'About Us',
-  description: 'Our story at China Unique Store - bringing quality and elegance to modern Pakistani homes.',
+  description: 'Our story at Aam Samaan - bringing quality and elegance to modern Pakistani homes.',
 };
 
 export default function AboutUsPage() {
@@ -28,7 +28,7 @@ export default function AboutUsPage() {
             <div className="space-y-6">
               <h2 className="text-2xl font-semibold">Quality Meets Elegance</h2>
               <p className="text-muted-foreground">
-                Founded with a passion for excellence, China Unique Store began as a small initiative to bring high-quality, 
+                Founded with a passion for excellence, Aam Samaan began as a small initiative to bring high-quality, 
                 internationally-sourced kitchenware and home decor to Pakistan. We believe that your home is a reflection 
                 of your journey, and every piece you choose should tell a story of quality and style.
               </p>
@@ -64,7 +64,7 @@ export default function AboutUsPage() {
           <div className="mt-16 rounded-3xl bg-primary px-8 py-12 text-center text-primary-foreground md:px-16">
             <h2 className="mb-4 text-3xl font-bold text-white">Inspired Living</h2>
             <p className="mx-auto mb-8 max-w-xl text-primary-foreground/80">
-              Join thousands of Pakistani families who have transformed their homes with China Unique Store. 
+              Join thousands of Pakistani families who have transformed their homes with Aam Samaan. 
               We&apos;re more than just a brand; we&apos;re your partner in creating a home that feels like yours.
             </p>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">

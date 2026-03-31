@@ -15,7 +15,7 @@ export default function SignInPage() {
           <Store className="size-8" />
         </div>
         <h2 className="text-3xl font-bold tracking-tight text-foreground">Admin Access</h2>
-        <p className="mx-auto mt-2 max-w-xs text-sm text-muted-foreground">Secure login for China Unique Store management.</p>
+        <p className="mx-auto mt-2 max-w-xs text-sm text-muted-foreground">Secure login for Aam Samaan management.</p>
 
         <Button className="mt-8 w-full" size="lg" onClick={() => signIn('google', { callbackUrl: '/' })}>
           Continue with Google

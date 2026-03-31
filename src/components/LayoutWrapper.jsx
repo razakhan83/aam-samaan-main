@@ -36,9 +36,9 @@ export default function LayoutWrapper({ children, categories, settings }) {
           <div className="container mx-auto max-w-7xl px-4">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               <div>
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="flex size-11 items-center justify-center rounded-xl bg-white/10">
-                    <Store className="size-5" />
+                <div className="mb-4 flex items-center gap-4">
+                  <div className="flex shrink-0 items-center justify-center rounded-xl bg-white p-2 shadow-md">
+                    <img src="/logo.jpg" alt={settings.storeName} className="h-14 w-auto object-contain" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold">{settings.storeName}</h3>
@@ -114,7 +114,7 @@ export default function LayoutWrapper({ children, categories, settings }) {
               </div>
             </div>
             <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-primary-foreground/60 md:flex-row">
-              <p>&copy; China Unique Store. All rights reserved.</p>
+              <p>&copy; Aam Samaan. All rights reserved.</p>
               <div className="flex items-center gap-3">
                 <span className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2">
                   <CreditCard className="size-4" />

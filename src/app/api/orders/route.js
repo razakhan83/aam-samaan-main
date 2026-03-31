@@ -15,7 +15,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 async function sendOrderNotificationEmail({ order, customerName }) {
     try {
         const data = await resend.emails.send({
-            from: 'China Unique <onboarding@resend.dev>',
+            from: 'Aam Samaan <onboarding@resend.dev>',
             to: '123raza83@gmail.com',
             subject: `New Order Received - ${customerName}`,
             html: generateOrderEmailHtml(order),

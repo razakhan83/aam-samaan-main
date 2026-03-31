@@ -2,7 +2,7 @@ import { Truck, Clock, CreditCard, Info, MapPin } from 'lucide-react';
 
 export const metadata = {
   title: 'Shipping Policy',
-  description: 'Learn about our shipping rates, delivery times, and tracking information at China Unique Store.',
+  description: 'Learn about our shipping rates, delivery times, and tracking information at Aam Samaan.',
 };
 
 export default function ShippingPolicyPage() {
