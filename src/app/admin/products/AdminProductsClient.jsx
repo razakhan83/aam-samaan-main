@@ -636,6 +636,161 @@ export default function AdminProductsClient({
         </div>
       </div>
 
+      <div className={cn("grid gap-3 md:hidden", isPending && "opacity-70")}>
+        {products.length === 0 ? (
+          <div className="rounded-xl border border-border bg-card px-4 py-10 text-center">
+            <p className="font-medium text-muted-foreground">No products found for the selected criteria.</p>
+          </div>
+        ) : (
+          products.map((product) => (
+            <div key={product._id} className="rounded-xl border border-border bg-card p-4">
+              <div className="flex items-start gap-3">
+                <div className="relative size-16 shrink-0 overflow-hidden rounded-lg border border-border bg-muted">
+                  {getPrimaryProductImage(product)?.url ? (
+                    <Image
+                      src={getPrimaryProductImage(product).url}
+                      alt={product.Name}
+                      fill
+                      className="object-cover"
+                      {...getBlurPlaceholderProps(getPrimaryProductImage(product).blurDataURL)}
+                    />
+                  ) : (
+                    <div className="flex size-full items-center justify-center text-muted-foreground">
+                      <ImageIcon className="size-4" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <p className="line-clamp-2 text-sm font-semibold text-foreground">{product.Name}</p>
+                  <div className="mt-1 flex flex-wrap gap-1.5">
+                    {getProductCategoryNames(product).slice(0, 3).map((category) => (
+                      <Badge key={category} variant="secondary" className="text-[10px]">
+                        {category}
+                      </Badge>
+                    ))}
+                  </div>
+                  <div className="mt-3">
+                    {product.isDiscounted && product.discountPercentage > 0 ? (
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-sm font-bold text-primary">
+                          PKR {Math.round(product.Price * (1 - product.discountPercentage / 100)).toLocaleString("en-PK")}
+                        </span>
+                        <span className="text-xs text-muted-foreground line-through">{formatPrice(product.Price)}</span>
+                      </div>
+                    ) : (
+                      <span className="text-sm font-semibold text-primary">{formatPrice(product.Price)}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
+                <div className="rounded-lg border border-border bg-muted/35 px-3 py-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Stock</p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <Switch
+                      checked={product.StockStatus === "In Stock"}
+                      disabled={togglingStockId === product._id}
+                      onCheckedChange={() => handleToggleStock(product)}
+                      aria-label={`Toggle ${product.Name} stock status`}
+                    />
+                    <span className="font-medium text-foreground">
+                      {product.StockStatus === "In Stock" ? "In Stock" : "Out of Stock"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="rounded-lg border border-border bg-muted/35 px-3 py-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Visibility</p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <Switch
+                      checked={product.isLive}
+                      disabled={togglingId === product._id}
+                      onCheckedChange={() => handleToggleLive(product)}
+                      aria-label={`Toggle ${product.Name} live status`}
+                    />
+                    <span className="font-medium text-foreground">{product.isLive ? "Live" : "Draft"}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 flex items-center gap-2">
+                <Button
+                  variant={product.isDiscounted ? "default" : "outline"}
+                  size="sm"
+                  className={cn(
+                    "flex-1",
+                    product.isDiscounted
+                      ? "border-border bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+                      : "border-border bg-background text-foreground hover:bg-muted hover:text-foreground"
+                  )}
+                  onClick={() => setDiscountModal({ open: true, product })}
+                >
+                  <Tag data-icon="inline-start" />
+                  {product.isDiscounted ? `${product.discountPercentage}% Discount` : "Set Discount"}
+                </Button>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    className={cn(
+                      "inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
+                    )}
+                    title="Actions"
+                  >
+                    <MoreVertical className="size-4" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[160px]">
+                    <DropdownMenuGroup>
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Link href={`/admin/products/edit/${product._id}`} className="flex w-full items-center">
+                          <Pencil className="mr-2 size-4" />
+                          Edit
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="cursor-pointer" onClick={() => setReviewsModal({ open: true, product })}>
+                        <MessageSquare className="mr-2 size-4" />
+                        Reviews
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-destructive focus:bg-destructive cursor-pointer focus:text-destructive-foreground"
+                        onClick={() => setDeleteModal({ open: true, product })}
+                      >
+                        <Trash2 className="mr-2 size-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
+              <div className="mt-3 flex items-center gap-2">
+                <button
+                  onClick={() => toggleProductFlag(product._id, "isNewArrival", product.isNewArrival)}
+                  className={cn(
+                    "flex h-7 px-2 items-center justify-center rounded-md border text-[10px] font-bold transition-all",
+                    product.isNewArrival ? "bg-primary/10 border-primary/20 text-primary" : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
+                  )}
+                >
+                  NEW
+                </button>
+                <button
+                  onClick={() => toggleProductFlag(product._id, "isBestSelling", product.isBestSelling)}
+                  className={cn(
+                    "flex h-7 px-2 items-center justify-center rounded-md border text-[10px] font-bold transition-all",
+                    product.isBestSelling ? "bg-rose-500/10 border-rose-500/20 text-rose-600" : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted",
+                  )}
+                >
+                  TOP
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
       {totalPages > 1 && (
         <div className="mt-6 flex flex-col gap-3 px-2">
           <p className="text-sm text-muted-foreground">

@@ -309,6 +309,22 @@ export default function AdminLayoutShell({ children, sessionUser }) {
       </nav>
 
       <div className="mt-auto flex flex-col gap-3 border-t border-border pt-5">
+        <div className="md:hidden">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full justify-start text-muted-foreground hover:bg-muted hover:text-foreground"
+            onClick={() => {
+              const nextTheme = adminTheme === 'dark' ? 'light' : 'dark';
+              window.localStorage.setItem('admin-theme', nextTheme);
+              window.dispatchEvent(new Event('admin-theme-change'));
+            }}
+          >
+            {adminTheme === 'dark' ? <Sun data-icon="inline-start" /> : <Moon data-icon="inline-start" />}
+            {adminTheme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+          </Button>
+        </div>
+
         <div className="flex items-center gap-3 rounded-lg bg-muted/55 px-3 py-3">
           <Avatar className="size-9 border border-border">
             <AvatarImage src={sessionUser?.image} alt={sessionUser?.name || 'Admin'} />
@@ -369,7 +385,7 @@ export default function AdminLayoutShell({ children, sessionUser }) {
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="border-border bg-background text-foreground"
+                  className="hidden border-border bg-background text-foreground md:inline-flex"
                   onClick={() => {
                     const nextTheme = adminTheme === 'dark' ? 'light' : 'dark';
                     window.localStorage.setItem('admin-theme', nextTheme);
