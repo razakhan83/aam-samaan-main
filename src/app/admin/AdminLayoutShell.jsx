@@ -187,10 +187,6 @@ export default function AdminLayoutShell({ children, sessionUser }) {
   }, [pathname]);
 
   useEffect(() => {
-    window.localStorage.setItem('admin-theme', adminTheme);
-  }, [adminTheme]);
-
-  useEffect(() => {
     const root = document.documentElement;
     const body = document.body;
 
