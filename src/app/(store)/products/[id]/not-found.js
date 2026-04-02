@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { PackageX, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export default function ProductNotFound() {
   return (
@@ -14,12 +15,10 @@ export default function ProductNotFound() {
           This product doesn&apos;t exist or is no longer available.
         </p>
       </div>
-      <Button asChild variant="outline">
-        <Link href="/products" className="gap-2">
-          <ArrowLeft className="size-4" />
-          Browse Products
-        </Link>
-      </Button>
+      <Link href="/products" className={cn(buttonVariants({ variant: 'outline' }), 'gap-2')}>
+        <ArrowLeft className="size-4" />
+        Browse Products
+      </Link>
     </div>
   );
 }

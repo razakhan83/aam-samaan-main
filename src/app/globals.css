@@ -134,6 +134,99 @@
 }
 
 @layer utilities {
+  .admin-theme-light {
+    --color-background: oklch(1 0 0);
+    --color-foreground: oklch(0.145 0 0);
+    --color-card: oklch(1 0 0);
+    --color-card-foreground: oklch(0.145 0 0);
+    --color-popover: oklch(1 0 0);
+    --color-popover-foreground: oklch(0.145 0 0);
+    --color-primary: oklch(0.181 0 0);
+    --color-primary-foreground: oklch(1 0 0);
+    --color-secondary: oklch(0.967 0 0);
+    --color-secondary-foreground: oklch(0.145 0 0);
+    --color-muted: oklch(0.967 0 0);
+    --color-muted-foreground: oklch(0.396 0 0);
+    --color-accent: oklch(0.967 0 0);
+    --color-accent-foreground: oklch(0.145 0 0);
+    --color-border: oklch(0.922 0 0);
+    --color-input: oklch(1 0 0);
+    --color-ring: oklch(0.181 0 0);
+    --color-destructive: oklch(0.577 0.245 27.325);
+    --color-destructive-foreground: oklch(1 0 0);
+    --color-success: oklch(0.556 0 0);
+    --color-success-foreground: oklch(1 0 0);
+  }
+
+  .admin-theme-dark {
+    --color-background: oklch(0.145 0 0);
+    --color-foreground: oklch(0.985 0 0);
+    --color-card: oklch(0.177 0 0);
+    --color-card-foreground: oklch(0.985 0 0);
+    --color-popover: oklch(0.177 0 0);
+    --color-popover-foreground: oklch(0.985 0 0);
+    --color-primary: oklch(0.985 0 0);
+    --color-primary-foreground: oklch(0.145 0 0);
+    --color-secondary: oklch(0.274 0 0);
+    --color-secondary-foreground: oklch(0.985 0 0);
+    --color-muted: oklch(0.274 0 0);
+    --color-muted-foreground: oklch(0.705 0 0);
+    --color-accent: oklch(0.274 0 0);
+    --color-accent-foreground: oklch(0.985 0 0);
+    --color-border: oklch(0.274 0 0);
+    --color-input: oklch(0.177 0 0);
+    --color-ring: oklch(0.985 0 0);
+    --color-destructive: oklch(0.704 0.191 22.216);
+    --color-destructive-foreground: oklch(0.985 0 0);
+    --color-success: oklch(0.556 0 0);
+    --color-success-foreground: oklch(0.985 0 0);
+  }
+
+  .admin-theme-light,
+  .admin-theme-dark {
+    color-scheme: light;
+  }
+
+  .admin-theme-dark {
+    color-scheme: dark;
+  }
+
+  .admin-theme-light .admin-shell,
+  .admin-theme-light.admin-shell {
+    background: #ffffff;
+    color: #09090b;
+  }
+
+  .admin-theme-dark .admin-shell,
+  .admin-theme-dark.admin-shell {
+    background: #09090b;
+    color: #fafafa;
+  }
+
+  .admin-theme-light .admin-shell header,
+  .admin-theme-light.admin-shell header {
+    background: rgba(255, 255, 255, 0.96) !important;
+    border-color: #e4e4e7 !important;
+  }
+
+  .admin-theme-dark .admin-shell header,
+  .admin-theme-dark.admin-shell header {
+    background: rgba(9, 9, 11, 0.96) !important;
+    border-color: #27272a !important;
+  }
+
+  .admin-theme-light .admin-shell aside,
+  .admin-theme-light.admin-shell aside {
+    background: #ffffff !important;
+    border-color: #e4e4e7 !important;
+  }
+
+  .admin-theme-dark .admin-shell aside,
+  .admin-theme-dark.admin-shell aside {
+    background: #09090b !important;
+    border-color: #27272a !important;
+  }
+
   .surface-card {
     background: color-mix(in oklab, var(--color-card) 92%, white);
     border: 1px solid color-mix(in oklab, var(--color-border) 88%, white);
@@ -142,6 +235,347 @@
   .surface-panel {
     background: linear-gradient(180deg, color-mix(in oklab, var(--color-card) 96%, white), color-mix(in oklab, var(--color-muted) 45%, white));
     border: 1px solid color-mix(in oklab, var(--color-border) 88%, white);
+  }
+
+  .admin-theme-light .surface-card,
+  .admin-theme-light.admin-shell .surface-card {
+    background: #ffffff !important;
+    border: 1px solid #e4e4e7 !important;
+    box-shadow: 0 1px 2px rgba(9, 9, 11, 0.04) !important;
+  }
+
+  .admin-theme-dark .surface-card,
+  .admin-theme-dark.admin-shell .surface-card {
+    background: #121212 !important;
+    border: 1px solid #27272a !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.34) !important;
+  }
+
+  .admin-theme-light .surface-panel,
+  .admin-theme-light.admin-shell .surface-panel {
+    background: #ffffff !important;
+    border: 1px solid #e4e4e7 !important;
+  }
+
+  .admin-theme-dark .surface-panel,
+  .admin-theme-dark.admin-shell .surface-panel {
+    background: #121212 !important;
+    border: 1px solid #27272a !important;
+  }
+
+  .admin-theme-light .admin-dashboard-stat,
+  .admin-theme-light .admin-dashboard-panel,
+  .admin-theme-light .admin-dashboard-order {
+    background: #ffffff !important;
+    border-color: #e4e4e7 !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-stat,
+  .admin-theme-dark .admin-dashboard-panel,
+  .admin-theme-dark .admin-dashboard-order {
+    background: #121212 !important;
+    border-color: #27272a !important;
+  }
+
+  .admin-theme-light .admin-dashboard-stat-icon,
+  .admin-theme-dark .admin-dashboard-stat-icon {
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+
+  .admin-theme-light .admin-dashboard-well {
+    background: #f4f4f5 !important;
+    border: 1px solid #e4e4e7 !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-well {
+    background: #18181b !important;
+    border: 1px solid #27272a !important;
+  }
+
+  .admin-theme-light .admin-shell .bg-card,
+  .admin-theme-light .admin-shell .bg-background,
+  .admin-theme-light .admin-shell .bg-input {
+    background-color: #ffffff !important;
+  }
+
+  .admin-theme-dark .admin-shell .bg-card,
+  .admin-theme-dark .admin-shell .bg-background,
+  .admin-theme-dark .admin-shell .bg-input {
+    background-color: #121212 !important;
+  }
+
+  .admin-theme-light .admin-shell .bg-muted,
+  .admin-theme-light .admin-shell .bg-muted\/20,
+  .admin-theme-light .admin-shell .bg-muted\/25,
+  .admin-theme-light .admin-shell .bg-muted\/30,
+  .admin-theme-light .admin-shell .bg-muted\/35,
+  .admin-theme-light .admin-shell .bg-muted\/40,
+  .admin-theme-light .admin-shell .bg-muted\/50,
+  .admin-theme-light .admin-shell .bg-muted\/55,
+  .admin-theme-light .admin-shell .bg-muted\/60,
+  .admin-theme-light .admin-shell .bg-muted\/70 {
+    background-color: #f4f4f5 !important;
+  }
+
+  .admin-theme-dark .admin-shell .bg-muted,
+  .admin-theme-dark .admin-shell .bg-muted\/20,
+  .admin-theme-dark .admin-shell .bg-muted\/25,
+  .admin-theme-dark .admin-shell .bg-muted\/30,
+  .admin-theme-dark .admin-shell .bg-muted\/35,
+  .admin-theme-dark .admin-shell .bg-muted\/40,
+  .admin-theme-dark .admin-shell .bg-muted\/50,
+  .admin-theme-dark .admin-shell .bg-muted\/55,
+  .admin-theme-dark .admin-shell .bg-muted\/60,
+  .admin-theme-dark .admin-shell .bg-muted\/70 {
+    background-color: #27272a !important;
+  }
+
+  .admin-theme-light .admin-shell .text-foreground {
+    color: #09090b !important;
+  }
+
+  .admin-theme-dark .admin-shell .text-foreground {
+    color: #fafafa !important;
+  }
+
+  .admin-theme-light .admin-shell .text-muted-foreground {
+    color: #71717a !important;
+  }
+
+  .admin-theme-dark .admin-shell .text-muted-foreground {
+    color: #a1a1aa !important;
+  }
+
+  .admin-theme-light .admin-shell .border-border {
+    border-color: #e4e4e7 !important;
+  }
+
+  .admin-theme-dark .admin-shell .border-border {
+    border-color: #27272a !important;
+  }
+
+  .admin-theme-light .admin-shell .text-primary {
+    color: #18181b !important;
+  }
+
+  .admin-theme-dark .admin-shell .text-primary {
+    color: #fafafa !important;
+  }
+
+  .admin-theme-light .admin-shell .text-primary-foreground {
+    color: #ffffff !important;
+  }
+
+  .admin-theme-dark .admin-shell .text-primary-foreground {
+    color: #09090b !important;
+  }
+
+  .admin-theme-light .admin-shell .text-success,
+  .admin-theme-light .admin-shell .text-success\/70,
+  .admin-theme-light .admin-shell .text-success\/60,
+  .admin-theme-light .admin-shell .text-accent,
+  .admin-theme-light .admin-shell .text-accent-foreground,
+  .admin-theme-light .admin-shell .text-accent-foreground\/70,
+  .admin-theme-light .admin-shell .text-accent-foreground\/80,
+  .admin-theme-light .admin-shell .text-accent-foreground\/60,
+  .admin-theme-light .admin-shell .text-rose-600 {
+    color: #09090b !important;
+  }
+
+  .admin-theme-dark .admin-shell .text-success,
+  .admin-theme-dark .admin-shell .text-success\/70,
+  .admin-theme-dark .admin-shell .text-success\/60,
+  .admin-theme-dark .admin-shell .text-accent,
+  .admin-theme-dark .admin-shell .text-accent-foreground,
+  .admin-theme-dark .admin-shell .text-accent-foreground\/70,
+  .admin-theme-dark .admin-shell .text-accent-foreground\/80,
+  .admin-theme-dark .admin-shell .text-accent-foreground\/60,
+  .admin-theme-dark .admin-shell .text-rose-600 {
+    color: #fafafa !important;
+  }
+
+  .admin-theme-light .admin-shell .fill-accent,
+  .admin-theme-light .admin-shell .fill-primary {
+    fill: #09090b !important;
+  }
+
+  .admin-theme-dark .admin-shell .fill-accent,
+  .admin-theme-dark .admin-shell .fill-primary {
+    fill: #fafafa !important;
+  }
+
+  .admin-theme-light .admin-shell .bg-primary {
+    background-color: #18181b !important;
+  }
+
+  .admin-theme-dark .admin-shell .bg-primary {
+    background-color: #fafafa !important;
+  }
+
+  .admin-theme-light .admin-shell .bg-primary\/10,
+  .admin-theme-light .admin-shell .bg-primary\/8,
+  .admin-theme-light .admin-shell .bg-primary\/5,
+  .admin-theme-light .admin-shell .bg-primary\/20,
+  .admin-theme-light .admin-shell .bg-success\/8,
+  .admin-theme-light .admin-shell .bg-success\/10,
+  .admin-theme-light .admin-shell .bg-success\/12,
+  .admin-theme-light .admin-shell .bg-accent\/10,
+  .admin-theme-light .admin-shell .bg-accent\/12,
+  .admin-theme-light .admin-shell .bg-accent\/15,
+  .admin-theme-light .admin-shell .bg-accent\/18,
+  .admin-theme-light .admin-shell .bg-rose-500\/10 {
+    background-color: #f4f4f5 !important;
+  }
+
+  .admin-theme-light .admin-shell .hover\:bg-muted:hover,
+  .admin-theme-light .admin-shell .hover\:bg-muted\/50:hover,
+  .admin-theme-light .admin-shell .hover\:bg-muted\/60:hover,
+  .admin-theme-light .admin-shell .hover\:bg-muted\/70:hover {
+    background-color: #f4f4f5 !important;
+  }
+
+  .admin-theme-light .admin-shell .hover\:bg-primary\/5:hover,
+  .admin-theme-light .admin-shell .hover\:bg-primary\/10:hover {
+    background-color: #f4f4f5 !important;
+  }
+
+  .admin-theme-light .admin-shell .hover\:bg-primary:hover {
+    background-color: #18181b !important;
+    color: #ffffff !important;
+  }
+
+  .admin-theme-light .admin-shell .hover\:bg-destructive\/10:hover {
+    background-color: #fef2f2 !important;
+  }
+
+  .admin-theme-light .admin-shell .hover\:bg-destructive\/5:hover {
+    background-color: #fef2f2 !important;
+  }
+
+  .admin-theme-light .admin-shell .hover\:bg-destructive:hover {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+  }
+
+  .admin-theme-light .admin-shell .hover\:text-foreground:hover,
+  .admin-theme-light .admin-shell .hover\:text-primary:hover {
+    color: #09090b !important;
+  }
+
+  .admin-theme-light .admin-shell .hover\:text-destructive:hover {
+    color: #dc2626 !important;
+  }
+
+  .admin-theme-light .admin-shell .hover\:border-border:hover,
+  .admin-theme-light .admin-shell .hover\:border-primary:hover {
+    border-color: #d4d4d8 !important;
+  }
+
+  .admin-theme-light .admin-shell .hover\:border-destructive\/35:hover {
+    border-color: rgba(220, 38, 38, 0.35) !important;
+  }
+
+  .admin-theme-light .admin-shell .hover\:border-primary\/20:hover,
+  .admin-theme-light .admin-shell .hover\:border-primary\/30:hover,
+  .admin-theme-light .admin-shell .hover\:border-primary\/35:hover {
+    border-color: #d4d4d8 !important;
+  }
+
+  .admin-theme-light .admin-shell .hover\:text-primary\/80:hover {
+    color: #09090b !important;
+  }
+
+  .admin-theme-light .admin-shell [data-slot="button"]:not(:disabled):hover {
+    box-shadow: inset 0 0 0 1px rgba(9, 9, 11, 0.04);
+  }
+
+  .admin-theme-light .admin-shell [data-slot="button"].bg-primary:not(:disabled):hover {
+    background-color: #27272a !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  .admin-theme-dark .admin-shell .bg-primary\/10,
+  .admin-theme-dark .admin-shell .bg-primary\/8,
+  .admin-theme-dark .admin-shell .bg-primary\/5,
+  .admin-theme-dark .admin-shell .bg-primary\/20,
+  .admin-theme-dark .admin-shell .bg-success\/8,
+  .admin-theme-dark .admin-shell .bg-success\/10,
+  .admin-theme-dark .admin-shell .bg-success\/12,
+  .admin-theme-dark .admin-shell .bg-accent\/10,
+  .admin-theme-dark .admin-shell .bg-accent\/12,
+  .admin-theme-dark .admin-shell .bg-accent\/15,
+  .admin-theme-dark .admin-shell .bg-accent\/18,
+  .admin-theme-dark .admin-shell .bg-rose-500\/10 {
+    background-color: #27272a !important;
+  }
+
+  .admin-theme-dark .admin-shell .hover\:bg-muted:hover,
+  .admin-theme-dark .admin-shell .hover\:bg-muted\/50:hover,
+  .admin-theme-dark .admin-shell .hover\:bg-muted\/60:hover,
+  .admin-theme-dark .admin-shell .hover\:bg-muted\/70:hover {
+    background-color: #27272a !important;
+  }
+
+  .admin-theme-dark .admin-shell .hover\:bg-primary\/5:hover,
+  .admin-theme-dark .admin-shell .hover\:bg-primary\/10:hover {
+    background-color: #27272a !important;
+  }
+
+  .admin-theme-dark .admin-shell .hover\:bg-primary:hover {
+    background-color: #fafafa !important;
+    color: #09090b !important;
+  }
+
+  .admin-theme-dark .admin-shell .hover\:bg-destructive\/10:hover {
+    background-color: #3f1d1d !important;
+  }
+
+  .admin-theme-dark .admin-shell .hover\:bg-destructive\/5:hover {
+    background-color: #2a1414 !important;
+  }
+
+  .admin-theme-dark .admin-shell .hover\:bg-destructive:hover {
+    background-color: #7f1d1d !important;
+    color: #fafafa !important;
+  }
+
+  .admin-theme-dark .admin-shell .hover\:text-foreground:hover,
+  .admin-theme-dark .admin-shell .hover\:text-primary:hover {
+    color: #fafafa !important;
+  }
+
+  .admin-theme-dark .admin-shell .hover\:text-destructive:hover {
+    color: #f87171 !important;
+  }
+
+  .admin-theme-dark .admin-shell .hover\:border-border:hover,
+  .admin-theme-dark .admin-shell .hover\:border-primary:hover {
+    border-color: #3f3f46 !important;
+  }
+
+  .admin-theme-dark .admin-shell .hover\:border-destructive\/35:hover {
+    border-color: rgba(248, 113, 113, 0.35) !important;
+  }
+
+  .admin-theme-dark .admin-shell .hover\:border-primary\/20:hover,
+  .admin-theme-dark .admin-shell .hover\:border-primary\/30:hover,
+  .admin-theme-dark .admin-shell .hover\:border-primary\/35:hover {
+    border-color: #3f3f46 !important;
+  }
+
+  .admin-theme-dark .admin-shell .hover\:text-primary\/80:hover {
+    color: #fafafa !important;
+  }
+
+  .admin-theme-dark .admin-shell [data-slot="button"]:not(:disabled):hover {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+
+  .admin-theme-dark .admin-shell [data-slot="button"].bg-primary:not(:disabled):hover {
+    background-color: #e4e4e7 !important;
+    color: #09090b !important;
+    box-shadow: none !important;
   }
 
   .mask-edge {

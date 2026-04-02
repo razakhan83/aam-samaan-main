@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Home, Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export default function NotFound() {
   return (
@@ -15,12 +16,10 @@ export default function NotFound() {
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
       </div>
-      <Button asChild>
-        <Link href="/" className="gap-2">
-          <Home className="size-4" />
-          Back to Home
-        </Link>
-      </Button>
+      <Link href="/" className={cn(buttonVariants(), 'gap-2')}>
+        <Home className="size-4" />
+        Back to Home
+      </Link>
     </div>
   );
 }

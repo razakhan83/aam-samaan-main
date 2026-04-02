@@ -23,9 +23,9 @@ const ICON_MAP = {
 };
 
 const COLOR_MAP = {
-  order: 'bg-primary/10 text-primary',
-  review: 'bg-accent/15 text-accent-foreground',
-  user: 'bg-success/12 text-success',
+  order: 'bg-muted text-foreground',
+  review: 'bg-muted text-foreground',
+  user: 'bg-muted text-foreground',
 };
 
 export default function AdminNotificationCenter() {
@@ -132,7 +132,7 @@ export default function AdminNotificationCenter() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 text-xs font-semibold text-primary hover:bg-primary/5"
+                className="h-8 text-xs font-semibold text-foreground hover:bg-muted"
                 onClick={markAllRead}
               >
                 Mark all as read
@@ -157,7 +157,7 @@ export default function AdminNotificationCenter() {
                     key={notification._id}
                     className={cn(
                       "group relative flex items-start gap-3 border-b border-border/40 p-4 transition-colors hover:bg-muted/50",
-                      !notification.isRead && "bg-primary/5"
+                      !notification.isRead && "bg-muted/60"
                     )}
                   >
                     {!notification.isRead && (
@@ -186,7 +186,7 @@ export default function AdminNotificationCenter() {
                     {!notification.isRead && (
                        <button 
                         onClick={() => markAsRead(notification._id)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-primary"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground"
                         title="Mark as read"
                        >
                          <CheckCircle2 className="size-4" />

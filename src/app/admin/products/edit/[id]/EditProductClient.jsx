@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Check, CloudUpload, Loader2, Plus, PlusCircle, Trash2, X } from 'lucide-react';
+import { ArrowLeft, Check, CloudUpload, Loader2, PlusCircle, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -44,10 +44,6 @@ export default function EditProduct({ id }) {
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [allCategories, setAllCategories] = useState([]);
-  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
-  const [newCatName, setNewCatName] = useState('');
-  const [newCatImage, setNewCatImage] = useState('');
-  const [isAddingCat, setIsAddingCat] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -105,56 +101,6 @@ export default function EditProduct({ id }) {
     fetchProduct();
     fetchCategories();
   }, [id, fetchCategories]);
-
-  const handleAddCategory = async (e) => {
-    e.preventDefault();
-    if (!newCatName.trim()) return;
-    setIsAddingCat(true);
-    try {
-      let uploadedCategoryImage = '';
-      let uploadedCategoryImagePublicId = '';
-      let uploadedCategoryBlurDataURL = '';
-      if (newCatImage) {
-        const uploaded = await uploadImageDataUrl(newCatImage, 'kifayatly_categories');
-        uploadedCategoryImage = uploaded.url;
-        uploadedCategoryImagePublicId = uploaded.publicId;
-        uploadedCategoryBlurDataURL = uploaded.blurDataURL;
-      }
-      const res = await fetch('/api/categories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newCatName.trim(),
-          image: uploadedCategoryImage,
-          imagePublicId: uploadedCategoryImagePublicId,
-          blurDataURL: uploadedCategoryBlurDataURL,
-          imageDataUrl: newCatImage || '',
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        showToast('Category added!', 'success');
-        setNewCatName('');
-        setNewCatImage('');
-        setIsCategoryModalOpen(false);
-        fetchCategories();
-      } else {
-        showToast(data.error || 'Failed to add category', 'error');
-      }
-    } catch {
-      showToast('Error adding category', 'error');
-    } finally {
-      setIsAddingCat(false);
-    }
-  };
-
-  const handleCategoryImageSelect = (e) => {
-    const file = e.target.files?.[0];
-    if (!file || !file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => setNewCatImage(ev.target?.result || '');
-    reader.readAsDataURL(file);
-  };
 
   const toggleCategory = (categoryId) => {
     setCategories(prev =>
@@ -336,13 +282,12 @@ export default function EditProduct({ id }) {
           <div>
             <div className="flex items-center justify-between mb-2">
               <Label>Categories</Label>
-              <button
-                type="button"
-                onClick={() => setIsCategoryModalOpen(true)}
-                className="inline-flex items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-primary/80"
+              <Link
+                href="/admin/categories"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-primary no-underline transition-colors hover:text-primary/80 hover:no-underline"
               >
                 <PlusCircle className="size-3.5" /> Manage Categories
-              </button>
+              </Link>
             </div>
             <div className="flex min-h-[52px] flex-wrap gap-2 rounded-xl border border-border bg-muted/35 p-3">
               {allCategories.length === 0 ? (

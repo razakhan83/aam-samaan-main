@@ -8,7 +8,8 @@ import { authOptions } from '@/lib/auth';
 import mongooseConnect from '@/lib/mongooseConnect';
 import Order from '@/models/Order';
 import OrderDetailsClient from './OrderDetailsClient';
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export const metadata = {
   title: 'Order Details | Aam Samaan',
@@ -61,9 +62,9 @@ export default async function SingleOrderPage({ params, searchParams }) {
           </div>
           
           <div className="flex items-center gap-3">
-             <Button variant="outline" asChild>
-                <Link href="/">Continue Shopping</Link>
-             </Button>
+            <Link href="/" className={cn(buttonVariants({ variant: 'outline' }))}>
+              Continue Shopping
+            </Link>
           </div>
         </div>
 

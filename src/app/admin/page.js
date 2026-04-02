@@ -7,9 +7,9 @@ import { getAdminDashboardData } from '@/lib/data';
 import { requireAdmin } from '@/lib/requireAdmin';
 
 const statsConfig = [
-  { title: 'Total Orders', icon: ShoppingBag, tone: 'bg-primary/10 text-primary', key: 'totalOrders' },
-  { title: 'Revenue', icon: CircleDollarSign, tone: 'bg-accent/18 text-accent-foreground', key: 'totalRevenue' },
-  { title: 'Total Products', icon: Box, tone: 'bg-secondary text-secondary-foreground', key: 'totalProducts' },
+  { title: 'Total Orders', icon: ShoppingBag, tone: 'bg-muted text-foreground', key: 'totalOrders' },
+  { title: 'Revenue', icon: CircleDollarSign, tone: 'bg-muted text-foreground', key: 'totalRevenue' },
+  { title: 'Total Products', icon: Box, tone: 'bg-muted text-foreground', key: 'totalProducts' },
   { title: 'Customers', icon: Users, tone: 'bg-muted text-foreground', key: 'totalCustomers' },
 ];
 
@@ -30,7 +30,7 @@ async function DashboardContent() {
   ];
 
   return (
-    <div className="w-full">
+    <div className="admin-dashboard w-full">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
         <p className="mt-2 text-sm text-muted-foreground">A calm view of store activity, inventory, and next actions.</p>
@@ -40,9 +40,9 @@ async function DashboardContent() {
         {statsConfig.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.title} className="surface-card rounded-xl p-5">
+            <div key={stat.title} className="admin-dashboard-stat surface-card rounded-xl p-5">
               <div className="mb-4 flex items-center justify-between">
-                <div className={`flex size-11 items-center justify-center rounded-xl ${stat.tone}`}>
+                <div className={`admin-dashboard-stat-icon flex size-11 items-center justify-center rounded-xl ${stat.tone}`}>
                   <Icon className="size-5" />
                 </div>
               </div>
@@ -55,7 +55,7 @@ async function DashboardContent() {
       </div>
 
       <div className="mb-8 grid grid-cols-1 gap-5 xl:grid-cols-2">
-        <div className="surface-card rounded-xl p-5">
+        <div className="admin-dashboard-panel surface-card rounded-xl p-5">
           <div className="mb-4 flex items-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <ShoppingBag className="size-4" />
@@ -65,13 +65,13 @@ async function DashboardContent() {
               <p className="text-sm text-muted-foreground">Confirmed orders recorded today.</p>
             </div>
           </div>
-          <div className="flex h-[280px] flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-center">
+          <div className="admin-dashboard-well flex h-[280px] flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-center">
             <p className="text-5xl font-black text-foreground">{summary.dailyConfirmedOrders}</p>
             <p className="mt-2 text-sm text-muted-foreground">Fresh count since midnight server time.</p>
           </div>
         </div>
 
-        <div className="surface-card rounded-xl p-5">
+        <div className="admin-dashboard-panel surface-card rounded-xl p-5">
           <div className="mb-4 flex items-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <CircleDollarSign className="size-4" />
@@ -81,13 +81,13 @@ async function DashboardContent() {
               <p className="text-sm text-muted-foreground">Cash on delivery totals based on saved orders.</p>
             </div>
           </div>
-          <div className="flex h-[280px] flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-center">
+          <div className="admin-dashboard-well flex h-[280px] flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-center">
             <p className="text-4xl font-black text-foreground">Rs. {summary.totalRevenue.toLocaleString('en-PK')}</p>
             <p className="mt-2 text-sm text-muted-foreground">Keep growing the catalog to drive the next order.</p>
           </div>
         </div>
 
-        <div className="surface-card rounded-xl p-5">
+        <div className="admin-dashboard-panel surface-card rounded-xl p-5">
           <div className="mb-4 flex items-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Inbox className="size-4" />
@@ -100,7 +100,7 @@ async function DashboardContent() {
           {recentOrders.length ? (
             <div className="space-y-3">
               {recentOrders.map((order) => (
-                <div key={order._id} className="rounded-xl border border-border bg-background p-4">
+                <div key={order._id} className="admin-dashboard-order rounded-xl border border-border bg-background p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <p className="font-semibold text-foreground">{order.customerName}</p>
@@ -115,7 +115,7 @@ async function DashboardContent() {
               ))}
             </div>
           ) : (
-            <div className="flex h-[280px] flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-center">
+            <div className="admin-dashboard-well flex h-[280px] flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-center">
               <Inbox className="mb-3 size-8 text-muted-foreground" />
               <p className="font-medium text-foreground">No orders yet</p>
               <p className="mt-1 text-sm text-muted-foreground">Once customers place orders, this panel becomes your quick overview.</p>
@@ -124,7 +124,7 @@ async function DashboardContent() {
         </div>
       </div>
 
-      <div className="surface-card flex flex-col gap-4 rounded-xl p-5 md:flex-row md:items-center md:justify-between">
+      <div className="admin-dashboard-panel surface-card flex flex-col gap-4 rounded-xl p-5 md:flex-row md:items-center md:justify-between">
         <div>
           <h2 className="font-semibold text-foreground">Next step</h2>
           <p className="mt-1 text-sm text-muted-foreground">Add products to shape the catalog before the first order arrives.</p>

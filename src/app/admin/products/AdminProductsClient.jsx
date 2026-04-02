@@ -581,7 +581,12 @@ export default function AdminProductsClient({
                         <Button
                           variant={product.isDiscounted ? "default" : "outline"}
                           size="sm"
-                          className="h-8 px-3"
+                          className={cn(
+                            "h-8 px-3",
+                            product.isDiscounted
+                              ? "border-border bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+                              : "border-border bg-background text-foreground hover:bg-muted hover:text-foreground"
+                          )}
                           onClick={() => setDiscountModal({ open: true, product })}
                           title="Set Discount"
                         >
