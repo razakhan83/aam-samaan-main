@@ -72,6 +72,13 @@ const ProductSchema = new mongoose.Schema(
             required: [true, 'Please provide at least one category.'],
             default: [],
         },
+        relatedProductIds: {
+            type: [{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Product',
+            }],
+            default: [],
+        },
         stockQuantity: {
             type: Number,
             default: 0,

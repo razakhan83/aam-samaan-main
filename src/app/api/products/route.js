@@ -70,6 +70,7 @@ export async function POST(req) {
             Images,
             cloudinary_id,
             Category: categoryInput,
+            relatedProductIds: relatedProductIdsInput,
             slug,
             StockStatus,
             isLive,
@@ -86,6 +87,14 @@ export async function POST(req) {
         const categories = await Category.find({ _id: { $in: categoryIds } }, '_id').lean();
         const validCategoryIdSet = new Set(categories.map((category) => category._id.toString()));
         const categoryArray = categoryIds.filter((id) => validCategoryIdSet.has(String(id)));
+        const relatedIds = Array.isArray(relatedProductIdsInput)
+            ? relatedProductIdsInput.map((id) => String(id || '').trim()).filter(Boolean)
+            : [];
+        const relatedProducts = relatedIds.length > 0
+            ? await Product.find({ _id: { $in: relatedIds } }, '_id').lean()
+            : [];
+        const validRelatedIdSet = new Set(relatedProducts.map((product) => product._id.toString()));
+        const relatedProductIds = relatedIds.filter((id) => validRelatedIdSet.has(String(id)));
 
         if (categoryArray.length === 0) {
             return NextResponse.json({ success: false, message: 'Please provide valid categories' }, { status: 400 });
@@ -131,6 +140,7 @@ export async function POST(req) {
             stockQuantity: normalizedStockQuantity,
             StockStatus: stockStatus,
             slug: uniqueSlug, // Ensure slug is saved
+            relatedProductIds,
             isLive: isLive === true || isLive === 'true' ? true : false,
             discountPercentage: normalizedDiscountPercentage,
             isDiscounted: normalizedDiscountPercentage > 0,
@@ -154,6 +164,9 @@ export async function POST(req) {
                 _id: product._id.toString(),
                 id: product.slug || product._id.toString(),
                 Category: getProductCategories(product.toObject()),
+                relatedProductIds: Array.isArray(product.relatedProductIds)
+                    ? product.relatedProductIds.map((item) => item?.toString?.() || String(item))
+                    : [],
                 Images: normalizeProductImages(product.Images),
             },
         }, { status: 201 });

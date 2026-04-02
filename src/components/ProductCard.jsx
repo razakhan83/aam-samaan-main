@@ -45,20 +45,19 @@ export default function ProductCard({ product, className = "" }) {
     : null;
 
   return (
-    <Card
-      className={cn(
-        "product-card-surface group relative flex flex-col gap-0 overflow-hidden rounded-xl border border-border bg-card transition-shadow duration-300 md:hover:shadow-md",
+      <Card
+        className={cn(
+        "product-card-surface group relative flex flex-col gap-0 overflow-hidden rounded-[1.35rem] border border-border bg-card transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.2,0,0,1)] md:hover:-translate-y-0.5",
         "py-0",
         className
       )}
       draggable={false}
     >
-      <div className="relative">
-        <div className="pointer-events-none absolute left-2.5 top-2.5 z-10 flex flex-col items-start gap-1.5">
+        <div className="relative">
+          <div className="pointer-events-none absolute left-2.5 top-2.5 z-10 flex flex-col items-start gap-1.5">
           <Badge
-            className={cn(
-              "pointer-events-auto rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-amber-700 tabular-nums"
-            )}
+            variant="secondary"
+            className="pointer-events-auto rounded-full bg-background/95 tabular-nums shadow-sm backdrop-blur-[2px]"
           >
             <Star className="mr-1 size-3.5 fill-current" />
             {dummyReviewLabel}
@@ -66,9 +65,8 @@ export default function ProductCard({ product, className = "" }) {
 
           {discountLabel && (
             <Badge
-              className={cn(
-                "pointer-events-auto rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-emerald-700 uppercase tracking-[0.08em]"
-              )}
+              variant="emerald"
+              className="pointer-events-auto rounded-full bg-background/95 uppercase tracking-[0.08em] shadow-sm backdrop-blur-[2px]"
             >
               {discountLabel}
             </Badge>
@@ -91,8 +89,8 @@ export default function ProductCard({ product, className = "" }) {
               draggable={false}
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               loading="lazy"
-              className={cn(
-                "object-cover outline outline-1 outline-black/5 transition-transform duration-500 ease-out md:group-hover:scale-105",
+                className={cn(
+                "object-cover outline outline-1 -outline-offset-1 outline-black/6 transition-transform duration-500 ease-[cubic-bezier(0.2,0,0,1)] md:group-hover:scale-[1.035]",
                 isUnavailable && "scale-[1.01] saturate-[0.85] opacity-75"
               )}
               {...getBlurPlaceholderProps(primaryImage.blurDataURL)}
@@ -114,7 +112,7 @@ export default function ProductCard({ product, className = "" }) {
           draggable={false}
         >
           <h3
-            className="line-clamp-1 text-base font-semibold leading-snug text-primary/80"
+            className="line-clamp-2 text-balance text-base font-semibold leading-snug text-primary/80"
             title={productName}
             draggable={false}
           >
@@ -154,4 +152,3 @@ export default function ProductCard({ product, className = "" }) {
     </Card>
   );
 }
-

@@ -229,9 +229,9 @@ function NavbarContent({
         </Button>
 
         <Link href="/" className="flex min-w-0 items-center gap-3">
-          <img src="/logo.jpg" alt="Aam Samaan" className="h-10 w-auto object-contain" />
+          <img src="/logo.jpg" alt="Aam Samaan" className="h-10 w-auto rounded-lg object-contain" />
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold uppercase tracking-[0.12em] text-primary">Aam Samaan</p>
+            <p className="truncate text-balance text-sm font-semibold uppercase tracking-[0.12em] text-primary">Aam Samaan</p>
             <p className="truncate text-xs text-muted-foreground">Home and lifestyle store</p>
           </div>
         </Link>
@@ -304,7 +304,7 @@ function NavbarContent({
             )}
           >
             <span className="relative flex size-5 items-center justify-center">
-              <Search className={cn('navbar-toggle-icon navbar-toggle-icon-search', isSearchOpen && 'is-hidden')} />
+              <Search className={cn('navbar-toggle-icon navbar-toggle-icon-search ml-px', isSearchOpen && 'is-hidden')} />
               <X className={cn('navbar-toggle-icon navbar-toggle-icon-close', isSearchOpen && 'is-visible')} />
             </span>
           </Button>
@@ -320,7 +320,7 @@ function NavbarContent({
               <ShoppingBag className="size-[1.05rem]" />
             </span>
             {cartCount > 0 ? (
-              <span className="absolute -right-2 -top-2 inline-flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold leading-none text-primary-foreground">
+              <span className="absolute -right-2 -top-2 inline-flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold leading-none text-primary-foreground tabular-nums shadow-sm">
                 {cartCount}
               </span>
             ) : null}
@@ -344,7 +344,7 @@ function NavbarContent({
                 <DropdownMenuContent className="w-56" align="end" sideOffset={8}>
                   <DropdownMenuGroup>
                     <DropdownMenuLabel className="font-normal">
-                      <div className="flex flex-col space-y-1">
+                      <div className="flex flex-col gap-1">
                         <p className="text-sm font-medium leading-none">{session.user?.name}</p>
                         <p className="text-xs leading-none text-muted-foreground">{session.user?.email}</p>
                       </div>

@@ -404,11 +404,14 @@ async function RelatedProductsSection({ slugPromise }) {
 
   const primaryCategory = getProductCategories(product)[0];
   const categorySlug = primaryCategory?.id || '';
+  const categoryLabel = primaryCategory?.name || 'this collection';
   const relatedProducts = await getRelatedProducts({
     category: categorySlug,
     excludeSlug: product.slug,
+    relatedProductIds: product.relatedProductIds,
     limit: 8,
   });
+  const hasManualRecommendations = Array.isArray(product.relatedProductIds) && product.relatedProductIds.length > 0;
 
   if (relatedProducts.length === 0) {
     return null;
@@ -417,8 +420,22 @@ async function RelatedProductsSection({ slugPromise }) {
   return (
     <div className="border-t border-border bg-muted/35 py-10 md:py-14">
       <div className="container mx-auto max-w-7xl px-4">
+        <div className="mb-6 flex max-w-2xl flex-col gap-2 md:mb-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/70">
+            {hasManualRecommendations ? "Curated Pairings" : "Smart Picks"}
+          </p>
+          <h2 className="text-balance text-[1.8rem] font-black tracking-[-0.05em] text-primary md:text-[2.35rem]">
+            {hasManualRecommendations ? "Chosen to pair beautifully with this product" : "More pieces worth exploring next"}
+          </h2>
+          <p className="text-pretty text-sm leading-6 text-muted-foreground md:text-[15px]">
+            {hasManualRecommendations
+              ? "These recommendations are hand-selected to complement the item you are viewing."
+              : `We pulled these from ${categoryLabel} and nearby high-interest products so the next great find feels close at hand.`}
+          </p>
+        </div>
         <CategoryProductSlider
-          categoryLabel="You May Also Like"
+          categoryLabel={hasManualRecommendations ? "Styled For This Pick" : "You May Also Like"}
+          viewAllHref={categorySlug ? `/products?category=${categorySlug}` : "/products"}
         >
           {relatedProducts.map((product, index) => (
             <ProductCard

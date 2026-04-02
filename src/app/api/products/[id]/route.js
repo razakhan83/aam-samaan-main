@@ -30,6 +30,9 @@ export async function GET(_request, { params }) {
                 _id: safeProduct._id.toString(),
                 id: safeProduct.slug || safeProduct._id.toString(),
                 Category: getProductCategories(safeProduct),
+                relatedProductIds: Array.isArray(safeProduct.relatedProductIds)
+                    ? safeProduct.relatedProductIds.map((item) => item?.toString?.() || String(item))
+                    : [],
                 Images: normalizeProductImages(safeProduct.Images),
             },
         });
@@ -69,9 +72,19 @@ export async function PUT(request, { params }) {
         const categoryInput = Array.isArray(body.Category)
             ? body.Category
             : [body.Category].filter(Boolean);
+        const relatedIdsInput = Array.isArray(body.relatedProductIds)
+            ? body.relatedProductIds
+            : [];
         const categories = await Category.find({ _id: { $in: categoryInput } }, '_id').lean();
         const validCategoryIdSet = new Set(categories.map((category) => category._id.toString()));
         const categoryArray = categoryInput.filter((id) => validCategoryIdSet.has(String(id)));
+        const relatedProducts = relatedIdsInput.length > 0
+            ? await Product.find({ _id: { $in: relatedIdsInput, $ne: existingProduct._id } }, '_id').lean()
+            : [];
+        const validRelatedIdSet = new Set(relatedProducts.map((product) => product._id.toString()));
+        const relatedProductIds = relatedIdsInput
+            .map((id) => String(id || '').trim())
+            .filter((id) => validRelatedIdSet.has(id));
 
         if (categoryArray.length === 0) {
             return NextResponse.json({ success: false, message: 'Please provide valid categories' }, { status: 400 });
@@ -89,6 +102,7 @@ export async function PUT(request, { params }) {
         existingProduct.Price = Number(body.Price);
         existingProduct.Images = normalizedImages;
         existingProduct.Category = categoryArray;
+        existingProduct.relatedProductIds = relatedProductIds;
         // existingProduct.StockStatus is intentionally left alone here; handled by the Admin toggle.
         existingProduct.isLive = body.isLive === true || body.isLive === 'true';
         
@@ -124,6 +138,9 @@ export async function PUT(request, { params }) {
                 _id: existingProduct._id.toString(),
                 id: existingProduct.slug || existingProduct._id.toString(),
                 Category: getProductCategories(existingProduct.toObject()),
+                relatedProductIds: Array.isArray(existingProduct.relatedProductIds)
+                    ? existingProduct.relatedProductIds.map((item) => item?.toString?.() || String(item))
+                    : [],
                 Images: normalizeProductImages(existingProduct.Images),
             },
         });

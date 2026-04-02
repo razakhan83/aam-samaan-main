@@ -59,7 +59,7 @@ export default function ProductCardAddToCartButton({ product, isOutOfStock = fal
 
   if (isOutOfStock) {
     return (
-      <span className="inline-flex min-h-8 items-center justify-center rounded-md border border-border bg-muted/35 px-2.5 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+      <span className="inline-flex min-h-10 items-center justify-center rounded-lg border border-border bg-muted/35 px-2.5 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground tabular-nums">
         Out of Stock
       </span>
     );
@@ -74,7 +74,7 @@ export default function ProductCardAddToCartButton({ product, isOutOfStock = fal
       onClick={handleAddToCart}
       data-state={animationState}
       aria-busy={isBusy}
-      className="add-to-cart-button product-card-add-to-cart-button relative size-8 cursor-pointer touch-manipulation rounded-md bg-transparent p-0 text-primary shadow-none transition-[transform,background-color,color,box-shadow] duration-200 ease-out hover:bg-primary/10 hover:text-primary active:scale-[0.96] active:bg-primary/10 active:text-primary disabled:pointer-events-none after:absolute after:-inset-2 after:content-['']"
+      className="add-to-cart-button product-card-add-to-cart-button relative size-10 cursor-pointer touch-manipulation rounded-lg bg-transparent p-0 text-primary shadow-none transition-[transform,background-color,color,box-shadow] duration-200 ease-out hover:bg-primary/10 hover:text-primary active:scale-[0.96] active:bg-primary/10 active:text-primary disabled:pointer-events-none after:absolute after:-inset-1 after:content-['']"
       aria-label="Add to cart"
     >
       <span className="relative inline-flex size-[1.125rem] items-center justify-center">

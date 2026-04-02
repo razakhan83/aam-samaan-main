@@ -13,22 +13,25 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { uploadImageDataUrl } from "@/lib/cloudinaryUpload";
+import RelatedProductsPicker from "@/components/RelatedProductsPicker";
 import { moveProductImageToFront } from "@/lib/productImages";
 import { getBlurPlaceholderProps } from "@/lib/imagePlaceholder";
 import { cn } from "@/lib/utils";
-
-const selectionChipClass = (selected) =>
-  cn(
-    "inline-flex items-center rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors",
-    selected
-      ? "border-primary bg-primary text-primary-foreground shadow-[0_12px_30px_rgba(10,61,46,0.14)]"
-      : "border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground"
-  );
 
 const uploadActionClass =
   "relative overflow-hidden inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground";
@@ -47,6 +50,7 @@ export default function AddProduct() {
   const [stockQuantity, setStockQuantity] = useState("1");
   const [stockStatus, setStockStatus] = useState("In Stock");
   const [Categories, setCategories] = useState([]);
+  const [relatedProductIds, setRelatedProductIds] = useState([]);
   const [images, setImages] = useState([]);
   const [isLive, setIsLive] = useState(true);
   const [isNewArrival, setIsNewArrival] = useState(true);
@@ -54,20 +58,29 @@ export default function AddProduct() {
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [allCategories, setAllCategories] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchFormData = async () => {
       try {
-        const res = await fetch("/api/categories");
-        const data = await res.json();
-        if (data.success) setAllCategories(data.data);
+        const [categoriesRes, productsRes] = await Promise.all([
+          fetch("/api/categories"),
+          fetch("/api/products"),
+        ]);
+        const [categoriesData, productsData] = await Promise.all([
+          categoriesRes.json(),
+          productsRes.json(),
+        ]);
+
+        if (categoriesData.success) setAllCategories(categoriesData.data);
+        if (productsData.success) setAllProducts(productsData.data);
       } catch (err) {
-        console.error("Failed to fetch categories:", err);
+        console.error("Failed to fetch product form data:", err);
       }
     };
 
-    fetchCategories();
+    fetchFormData();
   }, []);
 
   const toggleCategory = (categoryId) => {
@@ -161,6 +174,7 @@ export default function AddProduct() {
           StockStatus: stockStatus,
           Images: finalImages,
           Category: Categories,
+          relatedProductIds,
           isLive,
           isNewArrival,
           isBestSelling,
@@ -237,7 +251,7 @@ export default function AddProduct() {
       </div>
 
       <div className="surface-card max-w-2xl rounded-xl p-4 shadow-lg md:p-8">
-        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 md:gap-6">
           <div>
             <Label className="mb-2">Product Name</Label>
             <Input
@@ -324,15 +338,17 @@ export default function AddProduct() {
                 allCategories.map((cat) => {
                   const selected = Categories.includes(cat._id);
                   return (
-                    <button
+                    <Button
                       key={cat._id}
                       type="button"
                       onClick={() => toggleCategory(cat._id)}
-                      className={selectionChipClass(selected)}
+                      variant={selected ? "default" : "outline"}
+                      size="sm"
+                      className="rounded-lg"
                     >
-                      {selected && <Check className="mr-1 size-3" />}
+                      {selected ? <Check data-icon="inline-start" className="size-3" /> : null}
                       {cat.name}
-                    </button>
+                    </Button>
                   );
                 })
               )}
@@ -344,7 +360,7 @@ export default function AddProduct() {
             )}
           </div>
 
-          <div className="rounded-xl border border-border bg-muted/35 p-4 space-y-4">
+          <div className="flex flex-col gap-4 rounded-xl border border-border bg-muted/35 p-4">
             <div>
               <p className="text-sm font-semibold text-foreground">Inventory</p>
               <p className="mt-0.5 text-xs text-muted-foreground">
@@ -366,14 +382,17 @@ export default function AddProduct() {
               </div>
               <div>
                 <Label className="mb-2">Stock Status</Label>
-                <select
-                  value={stockStatus}
-                  onChange={(e) => setStockStatus(e.target.value)}
-                  className="flex h-11 w-full rounded-md border border-input bg-background px-4 py-2 text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                >
-                  <option value="In Stock">In Stock</option>
-                  <option value="Out of Stock">Out of Stock</option>
-                </select>
+                <Select value={stockStatus} onValueChange={setStockStatus}>
+                  <SelectTrigger className="h-11 rounded-xl px-4">
+                    <SelectValue placeholder="Select stock status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="In Stock">In Stock</SelectItem>
+                      <SelectItem value="Out of Stock">Out of Stock</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
@@ -387,24 +406,10 @@ export default function AddProduct() {
                   : "Saved as draft and hidden from the storefront."}
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => setIsLive(!isLive)}
-              className={cn(
-                "relative h-5 w-10 rounded-lg transition-colors duration-300",
-                isLive ? "bg-primary" : "bg-border"
-              )}
-            >
-              <span
-                className={cn(
-                  "absolute left-0.5 top-0.5 h-4 w-4 rounded-md bg-background shadow transition-transform duration-300",
-                  isLive ? "translate-x-5" : "translate-x-0"
-                )}
-              />
-            </button>
+            <Switch checked={isLive} onCheckedChange={setIsLive} aria-label="Toggle product visibility" />
           </div>
 
-          <div className="rounded-xl border border-border bg-muted/35 p-4 space-y-4">
+          <div className="flex flex-col gap-4 rounded-xl border border-border bg-muted/35 p-4">
             <p className="text-sm font-semibold text-foreground">Marketing Flags</p>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="flex items-center justify-between gap-2 border-b border-border/50 pb-4 sm:border-0 sm:pb-0">
@@ -414,22 +419,12 @@ export default function AddProduct() {
                 >
                   New Arrival
                 </Label>
-                <button
+                <Switch
                   id="toggle-new"
-                  type="button"
-                  onClick={() => setIsNewArrival(!isNewArrival)}
-                  className={cn(
-                    "relative h-5 w-10 rounded-lg transition-colors duration-300",
-                    isNewArrival ? "bg-primary" : "bg-border"
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "absolute left-0.5 top-0.5 h-4 w-4 rounded-md bg-background shadow transition-transform duration-300",
-                      isNewArrival ? "translate-x-5" : "translate-x-0"
-                    )}
-                  />
-                </button>
+                  checked={isNewArrival}
+                  onCheckedChange={setIsNewArrival}
+                  aria-label="Toggle new arrival"
+                />
               </div>
               <div className="flex items-center justify-between gap-2">
                 <Label
@@ -438,22 +433,12 @@ export default function AddProduct() {
                 >
                   Best Selling
                 </Label>
-                <button
+                <Switch
                   id="toggle-best"
-                  type="button"
-                  onClick={() => setIsBestSelling(!isBestSelling)}
-                  className={cn(
-                    "relative h-5 w-10 rounded-lg transition-colors duration-300",
-                    isBestSelling ? "bg-primary" : "bg-border"
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "absolute left-0.5 top-0.5 h-4 w-4 rounded-md bg-background shadow transition-transform duration-300",
-                      isBestSelling ? "translate-x-5" : "translate-x-0"
-                    )}
-                  />
-                </button>
+                  checked={isBestSelling}
+                  onCheckedChange={setIsBestSelling}
+                  aria-label="Toggle best selling"
+                />
               </div>
             </div>
           </div>
@@ -487,25 +472,29 @@ export default function AddProduct() {
                     className="object-cover"
                     {...getBlurPlaceholderProps(img.blurDataURL)}
                   />
-                  <button
+                  <Button
                     type="button"
                     onClick={() => removeImage(idx)}
-                    className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-background/95 text-destructive shadow-sm opacity-0 transition-all hover:bg-destructive hover:text-destructive-foreground group-hover:opacity-100"
+                    variant="destructive"
+                    size="icon-xs"
+                    className="absolute right-2 top-2 opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
                   >
                     <Trash2 className="size-3.5" />
-                  </button>
+                  </Button>
                   {idx !== 0 ? (
-                    <button
+                    <Button
                       type="button"
                       onClick={() => makeImagePrimary(idx)}
-                      className="absolute bottom-2 left-2 rounded-md border border-border bg-background/95 px-2 py-1 text-[10px] font-bold text-foreground shadow-sm opacity-0 transition-all hover:border-primary hover:text-primary group-hover:opacity-100"
+                      variant="outline"
+                      size="xs"
+                      className="absolute bottom-2 left-2 h-6 rounded-md bg-background/95 px-2 text-[10px] font-bold opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
                     >
                       Set Main
-                    </button>
+                    </Button>
                   ) : (
-                    <span className="absolute bottom-2 left-2 rounded-md bg-foreground/80 px-2 py-0.5 text-[10px] font-bold text-background shadow-sm">
+                    <Badge variant="secondary" className="absolute bottom-2 left-2 rounded-md bg-background/95 shadow-sm">
                       Main Image
-                    </span>
+                    </Badge>
                   )}
                 </div>
               ))}
@@ -529,7 +518,7 @@ export default function AddProduct() {
                 onChange={handleFileSelect}
                 className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
               />
-              <div className="space-y-3">
+              <div className="flex flex-col gap-3">
                 <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <CloudUpload className="size-6" />
                 </div>
@@ -559,7 +548,13 @@ export default function AddProduct() {
             />
           </div>
 
-          <div className="space-y-4 rounded-xl border border-border bg-muted/35 p-4 md:p-5">
+          <RelatedProductsPicker
+            products={allProducts}
+            selectedIds={relatedProductIds}
+            onChange={setRelatedProductIds}
+          />
+
+          <div className="flex flex-col gap-4 rounded-xl border border-border bg-muted/35 p-4 md:p-5">
             <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
               <div>
                 <h2 className="text-sm font-semibold text-foreground">SEO & Metadata</h2>
@@ -567,24 +562,17 @@ export default function AddProduct() {
                   Set search-facing copy during creation so each product launches ready for discovery.
                 </p>
               </div>
-              <div
-                className={cn(
-                  "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold",
-                  seoReady
-                    ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                    : "border-amber-200 bg-amber-50 text-amber-700"
-                )}
-              >
+              <Badge variant={seoReady ? "emerald" : "secondary"} className="rounded-full px-3 py-1 text-xs">
                 <Check
                   className={cn(
                     "size-3.5",
-                    seoReady ? "text-emerald-600" : "text-amber-600"
+                    seoReady ? "opacity-100" : "opacity-60"
                   )}
                 />
                 {seoReady
                   ? "SEO basics complete"
                   : `${seoCompleteCount}/${seoChecks.length} SEO basics complete`}
-              </div>
+              </Badge>
             </div>
 
             <div className="grid gap-4">
@@ -646,11 +634,11 @@ export default function AddProduct() {
                 <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                   Search Preview
                 </p>
-                <div className="mt-3 space-y-1.5">
+                <div className="mt-3 flex flex-col gap-1.5">
                   <p className="line-clamp-2 text-base font-semibold text-primary">
                     {seoPreviewTitle}
                   </p>
-                  <p className="truncate text-xs text-emerald-700">
+                  <p className="truncate text-xs text-primary">
                     {seoPreviewUrl}
                   </p>
                   <p className="line-clamp-3 text-sm leading-6 text-muted-foreground">
@@ -663,14 +651,14 @@ export default function AddProduct() {
                 <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                   Completion Check
                 </p>
-                <div className="mt-3 space-y-2">
+                <div className="mt-3 flex flex-col gap-2">
                   {seoChecks.map((item) => (
                     <div
                       key={item.label}
                       className={cn(
                         "flex items-center justify-between rounded-lg border px-3 py-2 text-xs font-medium",
                         item.complete
-                          ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                          ? "border-success/20 bg-success/10 text-primary"
                           : "border-border bg-muted/40 text-muted-foreground"
                       )}
                     >

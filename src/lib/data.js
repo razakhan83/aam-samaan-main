@@ -80,6 +80,9 @@ function serializeProduct(product) {
     id: safeProduct.slug || safeProduct._id.toString(),
     slug: safeProduct.slug || safeProduct._id.toString(),
     Category: getProductCategories(safeProduct),
+    relatedProductIds: Array.isArray(safeProduct.relatedProductIds)
+      ? safeProduct.relatedProductIds.map((item) => item?.toString?.() || String(item))
+      : [],
     Images: normalizeProductImages(safeProduct.Images),
     createdAt: safeProduct.createdAt ? new Date(safeProduct.createdAt).toISOString() : null,
     updatedAt: safeProduct.updatedAt ? new Date(safeProduct.updatedAt).toISOString() : null,
@@ -120,6 +123,7 @@ function toProductDetailView(product) {
     StockStatus: product.StockStatus || 'Out of Stock',
     isLive: product.isLive !== false,
     stockQuantity: Number(product.stockQuantity || 0),
+    relatedProductIds: Array.isArray(product.relatedProductIds) ? product.relatedProductIds : [],
     createdAt: product.createdAt,
     discountPercentage: Number(product.discountPercentage || 0),
     isDiscounted: product.isDiscounted === true,
@@ -843,20 +847,46 @@ export async function getProductPrerenderParams(limit = 1) {
   }
 }
 
-export async function getRelatedProducts({ category = '', excludeSlug = '', limit = 8 } = {}) {
+export async function getRelatedProducts({ category = '', excludeSlug = '', relatedProductIds = [], limit = 8 } = {}) {
   'use cache';
   cacheLife('foreverish');
   cacheTag('products');
   const products = await getLiveProductsRaw();
+  const availableProducts = products.filter((product) => product.slug !== excludeSlug);
+  const byId = new Map(availableProducts.map((product) => [String(product._id), product]));
+  const selectedIds = Array.isArray(relatedProductIds)
+    ? relatedProductIds.map((item) => String(item || '').trim()).filter(Boolean)
+    : [];
 
-  return products
-    .filter((product) => product.slug !== excludeSlug)
+  const manualMatches = selectedIds
+    .map((id) => byId.get(id))
+    .filter(Boolean);
+
+  const fallbackMatches = availableProducts
+    .filter((product) => !selectedIds.includes(String(product._id)))
     .filter((product) => {
       if (!category) return true;
       return hasProductCategory(product, category);
     })
-    .slice(0, limit)
-    .map(toProductCardItem);
+    .sort((a, b) => {
+      const scoreA =
+        (a.isBestSelling ? 4 : 0) +
+        (a.isNewArrival ? 2 : 0) +
+        (a.isDiscounted ? 1 : 0);
+      const scoreB =
+        (b.isBestSelling ? 4 : 0) +
+        (b.isNewArrival ? 2 : 0) +
+        (b.isDiscounted ? 1 : 0);
+
+      if (scoreA !== scoreB) return scoreB - scoreA;
+      return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+    });
+
+  const deduped = [...manualMatches, ...fallbackMatches].filter(
+    (product, index, array) => array.findIndex((item) => String(item._id) === String(product._id)) === index
+  );
+
+  return deduped.slice(0, limit).map(toProductCardItem);
 }
 
 export async function getCatalogFeed() {
