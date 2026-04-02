@@ -14,6 +14,7 @@ import OrderLog from '@/models/OrderLog';
 import Product from '@/models/Product';
 import Settings from '@/models/Settings';
 import User from '@/models/User';
+import { upsertSavedAddress } from '@/lib/userAddresses';
 import { getServerSession } from 'next-auth';
 import { Resend } from 'resend';
 import { generateOrderEmailHtml, generateCustomerOrderConfirmationHtml } from '@/lib/emailTemplates';
@@ -295,6 +296,24 @@ export async function submitOrderAction(input) {
   // Update User Profile (Background)
   if (userEmail) {
     try {
+      const existingUser = await User.findOne({ email: userEmail }).lean();
+      const savedAddresses = upsertSavedAddress(
+        existingUser?.savedAddresses,
+        {
+          label: customerCity ? `${customerCity} address` : 'Latest address',
+          recipientName: customerName,
+          phone: customerPhone,
+          city: customerCity,
+          address: customerAddress,
+          landmark,
+          isDefault: true,
+        },
+        {
+          fallbackName: customerName,
+          fallbackPhone: customerPhone,
+        }
+      );
+
       await User.findOneAndUpdate(
         { email: userEmail },
         {
@@ -305,6 +324,7 @@ export async function submitOrderAction(input) {
             city: customerCity,
             address: customerAddress,
             landmark,
+            savedAddresses,
           },
         },
         { new: true, upsert: true, setDefaultsOnInsert: true }

@@ -29,6 +29,10 @@ function normalizeCartItem(item) {
   };
 }
 
+function getItemLabel(item) {
+  return item?.Name || item?.name || 'Item';
+}
+
 function CartProviderContent({ children }) {
   const [cart, setCart] = useState([]);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -112,6 +116,62 @@ function CartProviderContent({ children }) {
         });
 
         return { success: true };
+      },
+      addManyToCart(products = [], options = {}) {
+        const normalizedItems = (Array.isArray(products) ? products : [])
+          .map((item) => normalizeCartItem(item))
+          .filter((item) => item.id);
+
+        if (normalizedItems.length === 0) {
+          return { success: false, count: 0 };
+        }
+
+        setCart((current) => {
+          const nextCart = [...current];
+
+          normalizedItems.forEach((normalized) => {
+            const existingIndex = nextCart.findIndex((item) => item.id === normalized.id);
+            if (existingIndex > -1) {
+              nextCart[existingIndex] = {
+                ...nextCart[existingIndex],
+                quantity: nextCart[existingIndex].quantity + normalized.quantity,
+              };
+            } else {
+              nextCart.push(normalized);
+            }
+
+            trackAddToCartEvent({
+              productId: normalized._id || normalized.id || normalized.slug,
+              name: normalized.Name,
+              category: Array.isArray(normalized.Category) ? normalized.Category.join(', ') : '',
+              value: normalized.discountedPrice ?? normalized.Price,
+              quantity: normalized.quantity,
+            });
+          });
+
+          return nextCart;
+        });
+
+        if (options.openCart) {
+          setIsSidebarOpen(false);
+          setIsCartOpen(true);
+        }
+
+        const totalUnits = normalizedItems.reduce((sum, item) => sum + item.quantity, 0);
+        toast.success(options.message || `${totalUnits} item${totalUnits === 1 ? '' : 's'} added to cart`, {
+          duration: 3200,
+          description:
+            normalizedItems.length === 1 ? getItemLabel(normalizedItems[0]) : `${normalizedItems.length} products are ready for checkout.`,
+          action: {
+            label: 'View Cart',
+            onClick: () => {
+              setIsSidebarOpen(false);
+              setIsCartOpen(true);
+            },
+          },
+        });
+
+        return { success: true, count: totalUnits };
       },
       removeFromCart(product) {
         const itemId = getCartItemId(product);

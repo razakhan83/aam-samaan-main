@@ -24,6 +24,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import InvoiceButton from '@/components/InvoiceButtonWrapper';
 import CopyButton from '@/components/CopyButton';
+import ReorderButton from '@/components/ReorderButton';
 import ReviewModal from '@/components/ReviewModal';
 import { cn } from '@/lib/utils';
 
@@ -173,7 +174,10 @@ export default function OrdersClient({ initialOrders }) {
             >
               {order.status}
             </Badge>
-            <InvoiceButton order={order} />
+            <div className="flex flex-wrap items-center gap-2">
+              <InvoiceButton order={order} />
+              <ReorderButton items={order.items} />
+            </div>
             {hasUnreviewedItems && (
               <Button 
                 size="sm" 

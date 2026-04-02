@@ -3,22 +3,23 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { 
-  User, 
-  Mail, 
-  Phone, 
+import {
+  User,
+  Mail,
+  Phone,
   MapPin,
-  Save, 
-  Loader2, 
+  Save,
+  Loader2,
   ChevronLeft,
   Navigation,
   Building2,
   ShieldCheck,
   MapPinned,
   Check,
-  ChevronsUpDown
+  ChevronsUpDown,
 } from 'lucide-react';
 import { toast } from 'sonner';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -36,11 +37,12 @@ import { PAKISTAN_CITIES } from '@/lib/cities';
 import { cn } from '@/lib/utils';
 
 export default function SettingsClient() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
-  
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [cityOpen, setCityOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -49,7 +51,6 @@ export default function SettingsClient() {
     address: '',
     landmark: '',
   });
-  const [cityOpen, setCityOpen] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -62,7 +63,7 @@ export default function SettingsClient() {
     }
   }, [status, router]);
 
-  const fetchSettings = async () => {
+  async function fetchSettings() {
     try {
       const response = await fetch('/api/user/settings');
       if (!response.ok) throw new Error('Failed to fetch settings');
@@ -81,12 +82,12 @@ export default function SettingsClient() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
-  const handleSave = async (e) => {
-    e.preventDefault();
+  async function handleSave(event) {
+    event.preventDefault();
     setSaving(true);
-    
+
     try {
       const response = await fetch('/api/user/settings', {
         method: 'PATCH',
@@ -101,7 +102,6 @@ export default function SettingsClient() {
       });
 
       if (!response.ok) throw new Error('Failed to update settings');
-      
       toast.success('Settings updated successfully');
     } catch (error) {
       console.error(error);
@@ -109,7 +109,7 @@ export default function SettingsClient() {
     } finally {
       setSaving(false);
     }
-  };
+  }
 
   if (loading) {
     return (
@@ -120,203 +120,187 @@ export default function SettingsClient() {
   }
 
   return (
-    <div className="container mx-auto max-w-2xl px-4 py-8">
-      <Button 
-        variant="ghost" 
+    <div className="container mx-auto max-w-3xl px-4 py-8">
+      <Button
+        variant="ghost"
         className="mb-6 -ml-2 text-muted-foreground hover:text-foreground"
         onClick={() => router.back()}
       >
-        <ChevronLeft className="mr-1 size-4" />
+        <ChevronLeft data-icon="inline-start" />
         Back
       </Button>
 
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">User Settings</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your default contact and delivery information.
-          </p>
-        </div>
+      <div className="mb-6 flex flex-col gap-2">
+        <span className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Account settings</span>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Your default checkout details</h1>
+        <p className="max-w-2xl text-sm text-muted-foreground [text-wrap:pretty]">
+          Keep one default delivery address here. It will auto-fill your checkout to make ordering faster.
+        </p>
+      </div>
 
-        <form onSubmit={handleSave} className="space-y-6">
-          <Card className="surface-card border-border/60">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <User className="size-5 text-primary" />
-                Profile Information
-              </CardTitle>
-              <CardDescription>
-                Basic account details synced from your login.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <FieldGroup className="grid gap-4 sm:grid-cols-2">
-                <Field>
-                  <FieldLabel htmlFor="name">Full Name</FieldLabel>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/60" />
-                    <Input 
-                      id="name" 
-                      value={formData.name} 
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="pl-10 focus:ring-primary/20"
-                      placeholder="Your Full Name"
-                    />
-                  </div>
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="email" className="flex items-center gap-2">
-                    Email Address
-                    <ShieldCheck className="size-3 text-primary" title="Locked to your Google account" />
-                  </FieldLabel>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/60" />
-                    <Input 
-                      id="email" 
-                      value={formData.email} 
-                      disabled 
-                      className="pl-10 bg-muted/30"
-                    />
-                  </div>
-                  <FieldDescription className="px-1 text-[10px]">
-                    Email is locked to your signed-in Google account for security.
-                  </FieldDescription>
-                </Field>
-              </FieldGroup>
-            </CardContent>
-          </Card>
-
-          <Card className="surface-card border-border/60">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <MapPin className="size-5 text-primary" />
-                Default Delivery Info
-              </CardTitle>
-              <CardDescription>
-                These details will be pre-filled during checkout.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <FieldGroup>
-                <Field>
-                  <FieldLabel htmlFor="phone">Phone Number</FieldLabel>
+      <form onSubmit={handleSave} className="flex flex-col gap-6">
+        <Card className="surface-card border-border/60">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <User className="size-5 text-primary" />
+              Profile Information
+            </CardTitle>
+            <CardDescription>
+              Basic account details synced from your sign-in profile.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FieldGroup className="grid gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="name">Full Name</FieldLabel>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/60" />
-                  <Input 
-                    id="phone" 
-                    placeholder="e.g. 0300 1234567"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="pl-10 focus:ring-primary/20"
+                  <User className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/60" />
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(event) => setFormData({ ...formData, name: event.target.value })}
+                    className="pl-10"
+                    placeholder="Your full name"
                   />
                 </div>
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="email" className="flex items-center gap-2">
+                  Email Address
+                  <ShieldCheck className="size-3 text-primary" title="Locked to your account" />
+                </FieldLabel>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/60" />
+                  <Input id="email" value={formData.email} disabled className="bg-muted/30 pl-10" />
+                </div>
+                <FieldDescription className="px-1 text-[11px]">
+                  Email is locked to your signed-in account for security.
+                </FieldDescription>
+              </Field>
+            </FieldGroup>
+          </CardContent>
+        </Card>
+
+        <Card className="surface-card border-border/60">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <MapPin className="size-5 text-primary" />
+              Default Delivery Info
+            </CardTitle>
+            <CardDescription>
+              This one saved address will auto-fill the checkout form.
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent>
+            <FieldGroup className="gap-4">
+              <Field>
+                <FieldLabel htmlFor="phone">Phone Number</FieldLabel>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/60" />
+                  <Input
+                    id="phone"
+                    value={formData.phone}
+                    onChange={(event) => setFormData({ ...formData, phone: event.target.value })}
+                    className="pl-10"
+                    placeholder="0300 1234567"
+                  />
+                </div>
+              </Field>
+
+              <FieldGroup className="grid gap-4 md:grid-cols-2">
+                <Field>
+                  <FieldLabel htmlFor="city">City</FieldLabel>
+                  <Popover open={cityOpen} onOpenChange={setCityOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={cityOpen}
+                        className={cn('w-full justify-between font-normal', !formData.city && 'text-muted-foreground')}
+                      >
+                        <span className="flex items-center gap-2 truncate">
+                          <Building2 className="size-4 text-muted-foreground/60" />
+                          {formData.city || 'Select your city'}
+                        </span>
+                        <ChevronsUpDown />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Search city..." />
+                        <CommandList className="max-h-60 overflow-y-auto">
+                          <CommandEmpty>No city found.</CommandEmpty>
+                          <CommandGroup>
+                            {PAKISTAN_CITIES.map((city) => (
+                              <CommandItem
+                                key={city}
+                                value={city}
+                                onSelect={(currentValue) => {
+                                  const exactCity = PAKISTAN_CITIES.find((candidate) => candidate.toLowerCase() === currentValue.toLowerCase()) || currentValue;
+                                  setFormData({
+                                    ...formData,
+                                    city: exactCity === formData.city ? '' : exactCity,
+                                  });
+                                  setCityOpen(false);
+                                }}
+                              >
+                                <Check className={cn('mr-2 size-4', formData.city === city ? 'opacity-100' : 'opacity-0')} />
+                                {city}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </Field>
-                <FieldGroup className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <Field>
-                    <FieldLabel htmlFor="city">City</FieldLabel>
-                    <Popover open={cityOpen} onOpenChange={setCityOpen}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          aria-expanded={cityOpen}
-                          className={cn("w-full justify-between font-normal", !formData.city && "text-muted-foreground")}
-                        >
-                          <div className="flex items-center gap-2">
-                            <Building2 className="size-4 text-muted-foreground/60" />
-                            {formData.city || "Select your city"}
-                          </div>
-                          <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
-                        <Command>
-                          <CommandInput placeholder="Search city..." />
-                          <CommandList className="max-h-60 overflow-y-auto">
-                            <CommandEmpty>No city found.</CommandEmpty>
-                            <CommandGroup>
-                              {PAKISTAN_CITIES.map((city) => (
-                                <CommandItem
-                                  key={city}
-                                  value={city}
-                                  onSelect={(currentValue) => {
-                                    const exactCity = PAKISTAN_CITIES.find(c => c.toLowerCase() === currentValue.toLowerCase()) || currentValue;
-                                    setFormData({ ...formData, city: exactCity === formData.city ? "" : exactCity });
-                                    setCityOpen(false);
-                                  }}
-                                >
-                                  <Check
-                                    className={cn(
-                                      "mr-2 size-4",
-                                      formData.city === city ? "opacity-100" : "opacity-0"
-                                    )}
-                                  />
-                                  {city}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  </Field>
-                  <Field>
-                    <FieldLabel htmlFor="landmark">Nearest Landmark</FieldLabel>
-                    <div className="relative">
-                      <Navigation className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/60" />
-                      <Input 
-                        id="landmark" 
-                        placeholder="e.g. Near ABC Hospital"
-                        value={formData.landmark}
-                        onChange={(e) => setFormData({ ...formData, landmark: e.target.value })}
-                        className="pl-10"
-                      />
-                    </div>
-                  </Field>
-                </FieldGroup>
 
                 <Field>
-                  <FieldLabel htmlFor="address">Complete Address</FieldLabel>
-                  <FieldContent>
-                    <div className="relative">
-                      <MapPinned className="absolute left-3 top-3 size-4 text-muted-foreground/60" />
-                      <Textarea
-                        id="address"
-                        className="min-h-[100px] pl-10"
-                        placeholder="Enter your complete home or office address (Street, Area, etc.)"
-                        value={formData.address}
-                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                      />
-                    </div>
-                    <FieldDescription>
-                      These details are used to pre-fill checkout for faster ordering.
-                    </FieldDescription>
-                  </FieldContent>
+                  <FieldLabel htmlFor="landmark">Nearest Landmark</FieldLabel>
+                  <div className="relative">
+                    <Navigation className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/60" />
+                    <Input
+                      id="landmark"
+                      value={formData.landmark}
+                      onChange={(event) => setFormData({ ...formData, landmark: event.target.value })}
+                      className="pl-10"
+                      placeholder="Near main road, school, plaza"
+                    />
+                  </div>
                 </Field>
               </FieldGroup>
-            </CardContent>
-            <CardFooter className="bg-muted/10 border-t border-border/40 px-6 py-4">
-              <Button 
-                type="submit" 
-                className="ml-auto min-w-[120px] font-semibold"
-                disabled={saving}
-              >
-                {saving ? (
-                  <>
-                    <Loader2 className="mr-2 size-4 animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Save className="mr-2 size-4" />
-                    Save Changes
-                  </>
-                )}
-              </Button>
-            </CardFooter>
-          </Card>
-        </form>
-      </div>
+
+              <Field>
+                <FieldLabel htmlFor="address">Complete Address</FieldLabel>
+                <FieldContent>
+                  <div className="relative">
+                    <MapPinned className="absolute left-3 top-3 size-4 text-muted-foreground/60" />
+                    <Textarea
+                      id="address"
+                      className="min-h-[110px] pl-10"
+                      placeholder="Street, area, house, flat, office, floor details"
+                      value={formData.address}
+                      onChange={(event) => setFormData({ ...formData, address: event.target.value })}
+                    />
+                  </div>
+                  <FieldDescription>
+                    This address will be used as your default checkout auto-fill.
+                  </FieldDescription>
+                </FieldContent>
+              </Field>
+            </FieldGroup>
+          </CardContent>
+
+          <CardFooter className="border-t border-border/40 bg-muted/10 px-6 py-4">
+            <Button type="submit" className="ml-auto min-w-[140px] font-semibold" disabled={saving}>
+              {saving ? <Loader2 className="animate-spin" data-icon="inline-start" /> : <Save data-icon="inline-start" />}
+              {saving ? 'Saving...' : 'Save Changes'}
+            </Button>
+          </CardFooter>
+        </Card>
+      </form>
     </div>
   );
 }

@@ -27,6 +27,24 @@ const UserSchema = new mongoose.Schema(
     landmark: {
       type: String,
     },
+    savedAddresses: {
+      type: [
+        new mongoose.Schema(
+          {
+            id: { type: String, required: true },
+            label: { type: String, default: '' },
+            recipientName: { type: String, default: '' },
+            phone: { type: String, default: '' },
+            city: { type: String, default: '' },
+            address: { type: String, default: '' },
+            landmark: { type: String, default: '' },
+            isDefault: { type: Boolean, default: false },
+          },
+          { _id: false }
+        ),
+      ],
+      default: [],
+    },
     disabled: {
       type: Boolean,
       default: false,

@@ -17,6 +17,7 @@ import {
   Truck,
   Wallet,
 } from 'lucide-react';
+import Link from 'next/link';
 
 import { getLastOrderDetailsAction, submitOrderAction } from '@/app/actions';
 import AuthModal from '@/components/AuthModal';

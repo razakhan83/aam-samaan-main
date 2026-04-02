@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import InvoiceButton from '@/components/InvoiceButtonWrapper';
 import CopyButton from '@/components/CopyButton';
+import ReorderButton from '@/components/ReorderButton';
 import { cn } from '@/lib/utils';
 
 const STATUS_COLORS = {
@@ -47,6 +48,7 @@ export default function OrderDetailsClient({ order }) {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          <ReorderButton items={order.items} />
           <InvoiceButton order={order} />
           <Badge 
             variant="outline" 
