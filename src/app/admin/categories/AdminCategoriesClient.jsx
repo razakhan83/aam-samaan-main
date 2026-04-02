@@ -68,7 +68,7 @@ function sanitizeSectionOrder(order, fallbackOrder = []) {
   return Array.from(new Set([...(Array.isArray(order) ? order : []), ...fallbackOrder].filter(Boolean)));
 }
 
-function SortableCategoryCard({ category, index, onEdit, onDelete, onToggleEnabled, onToggleHome }) {
+function SortableCategoryCard({ category, index, onEdit, onDelete, onToggleEnabled, onToggleHome, canDeleteCategories }) {
   const {
     attributes,
     listeners,
@@ -186,7 +186,7 @@ function SortableCategoryCard({ category, index, onEdit, onDelete, onToggleEnabl
               Edit
             </DropdownMenuItem>
           ) : null}
-          {!isVirtualSection && category.slug !== "special-offers" && (
+          {canDeleteCategories && !isVirtualSection && category.slug !== "special-offers" && (
             <DropdownMenuItem
               className="text-destructive focus:bg-destructive/10 focus:text-destructive"
               onClick={() => onDelete(category)}
@@ -201,7 +201,7 @@ function SortableCategoryCard({ category, index, onEdit, onDelete, onToggleEnabl
   );
 }
 
-export default function AdminCategoriesClient() {
+export default function AdminCategoriesClient({ canDeleteCategories = true }) {
   const [categories, setCategories] = useState([]);
   const [sectionOrder, setSectionOrder] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -685,6 +685,7 @@ const orderedSections = useMemo(() => {
                     }
                     onToggleEnabled={toggleCategoryEnabled}
                     onToggleHome={toggleCategoryHome}
+                    canDeleteCategories={canDeleteCategories}
                   />
                 ))}
               </div>
@@ -703,29 +704,31 @@ const orderedSections = useMemo(() => {
         </>
       )}
 
-      <AlertDialog
-        open={deleteModal.open}
-        onOpenChange={(open) => setDeleteModal((current) => ({ ...current, open }))}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete this category?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently remove{" "}
-              <span className="font-semibold text-foreground">{deleteModal.category?.name}</span>.
-              Products assigned to this category will not be deleted.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className={cn(buttonVariants({ variant: "outline" }))} onClick={() => setDeleteModal({ open: false, category: null })}>
-              Cancel
-            </AlertDialogCancel>
-            <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
-              {deleting ? "Deleting..." : "Delete Category"}
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {canDeleteCategories ? (
+        <AlertDialog
+          open={deleteModal.open}
+          onOpenChange={(open) => setDeleteModal((current) => ({ ...current, open }))}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete this category?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently remove{" "}
+                <span className="font-semibold text-foreground">{deleteModal.category?.name}</span>.
+                Products assigned to this category will not be deleted.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className={cn(buttonVariants({ variant: "outline" }))} onClick={() => setDeleteModal({ open: false, category: null })}>
+                Cancel
+              </AlertDialogCancel>
+              <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+                {deleting ? "Deleting..." : "Delete Category"}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      ) : null}
 
       {/* Edit Category Modal */}
       <AlertDialog

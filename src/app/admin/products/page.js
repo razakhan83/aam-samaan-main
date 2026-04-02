@@ -1,10 +1,11 @@
 import { getAdminProductsPage } from '@/lib/data';
 import { requireAdmin } from '@/lib/requireAdmin';
+import { ADMIN_PERMISSION, hasAdminPermission } from '@/lib/adminAccess';
 
 import AdminProductsClient from './AdminProductsClient';
 
 export default async function AdminProductsPage({ searchParams }) {
-  await requireAdmin();
+  const session = await requireAdmin(ADMIN_PERMISSION.PRODUCTS_VIEW);
 
   const params = await searchParams;
   const search = String(params?.search || '').trim();
@@ -25,6 +26,7 @@ export default async function AdminProductsPage({ searchParams }) {
       initialStockFilter={result.stock}
       initialSortOption={result.sort}
       summary={result.summary}
+      canDeleteProducts={hasAdminPermission(session.user?.adminRole, ADMIN_PERMISSION.PRODUCTS_DELETE)}
     />
   );
 }

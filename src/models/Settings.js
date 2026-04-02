@@ -22,6 +22,25 @@ const AnnouncementMessageSchema = new mongoose.Schema(
     }
 );
 
+const AdminAccessSchema = new mongoose.Schema(
+    {
+        email: {
+            type: String,
+            required: true,
+            trim: true,
+            lowercase: true,
+        },
+        role: {
+            type: String,
+            enum: ['full', 'catalog'],
+            default: 'full',
+        },
+    },
+    {
+        _id: false,
+    }
+);
+
 const SettingsSchema = new mongoose.Schema(
     {
         // Use a singleton pattern: there's only one settings doc, identified by this key
@@ -118,6 +137,10 @@ const SettingsSchema = new mongoose.Schema(
             type: [String],
             default: [],
         },
+        adminAccess: {
+            type: [AdminAccessSchema],
+            default: [],
+        },
         homepageSectionOrder: {
             type: [String],
             default: [],
@@ -133,7 +156,8 @@ if (
     cachedSettings &&
     (
         !cachedSettings.schema.path('homepageSectionOrder') ||
-        !cachedSettings.schema.path('announcementBarMessages')
+        !cachedSettings.schema.path('announcementBarMessages') ||
+        !cachedSettings.schema.path('adminAccess')
     )
 ) {
     delete mongoose.models.Settings;

@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import mongooseConnect from '@/lib/mongooseConnect';
 import Settings from '@/models/Settings';
 import { getAllAdminEmails, getConfiguredAdminEmails, isAdminEmail, normalizeEmail } from '@/lib/admin';
+import { getDynamicAdminEntries, normalizeAdminRole } from '@/lib/adminAccess';
 
 const SETTINGS_KEY = 'site-settings';
 
@@ -34,14 +35,14 @@ export async function GET() {
     await mongooseConnect();
     const settings = await Settings.findOne({ singletonKey: SETTINGS_KEY }).lean();
     const configuredAdmins = getConfiguredAdminEmails();
-    const dynamicAdmins = (settings?.adminEmails || []).map(normalizeEmail).filter(Boolean);
+    const dynamicAdmins = getDynamicAdminEntries(settings);
 
     return NextResponse.json({
       success: true,
       data: {
         configuredAdmins,
         dynamicAdmins,
-        allAdmins: getAllAdminEmails(dynamicAdmins),
+        allAdmins: getAllAdminEmails(dynamicAdmins.map((entry) => entry.email)),
       },
     });
   } catch (error) {
@@ -60,20 +61,53 @@ export async function POST(req) {
 
     const body = await req.json();
     const email = normalizeEmail(body.email);
+    const role = normalizeAdminRole(body.role);
     if (!email) {
       return NextResponse.json({ success: false, error: 'Email is required' }, { status: 400 });
     }
 
     await mongooseConnect();
-    const settings = await Settings.findOneAndUpdate(
-      { singletonKey: SETTINGS_KEY },
-      { $addToSet: { adminEmails: email } }, // addToSet avoids duplicates
-      { upsert: true, new: true },
-    ).lean();
+    const settings = await Settings.findOne({ singletonKey: SETTINGS_KEY });
+    const nextSettings = settings || new Settings({ singletonKey: SETTINGS_KEY });
+    const remainingEntries = getDynamicAdminEntries(nextSettings).filter((entry) => entry.email !== email);
 
-    return NextResponse.json({ success: true, data: settings.adminEmails });
+    nextSettings.adminEmails = Array.from(new Set([...(nextSettings.adminEmails || []), email]));
+    nextSettings.adminAccess = [...remainingEntries, { email, role }];
+    await nextSettings.save();
+
+    return NextResponse.json({ success: true, data: getDynamicAdminEntries(nextSettings) });
   } catch (error) {
     console.error('POST /api/settings/admins error:', error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
+
+export async function PATCH(req) {
+  try {
+    const session = await requireAdminSession();
+    if (!session) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const email = normalizeEmail(body.email);
+    const role = normalizeAdminRole(body.role);
+    if (!email) {
+      return NextResponse.json({ success: false, error: 'Email is required' }, { status: 400 });
+    }
+
+    await mongooseConnect();
+    const settings = await Settings.findOne({ singletonKey: SETTINGS_KEY });
+    const nextSettings = settings || new Settings({ singletonKey: SETTINGS_KEY });
+    const remainingEntries = getDynamicAdminEntries(nextSettings).filter((entry) => entry.email !== email);
+
+    nextSettings.adminEmails = Array.from(new Set([...(nextSettings.adminEmails || []), email]));
+    nextSettings.adminAccess = [...remainingEntries, { email, role }];
+    await nextSettings.save();
+
+    return NextResponse.json({ success: true, data: getDynamicAdminEntries(nextSettings) });
+  } catch (error) {
+    console.error('PATCH /api/settings/admins error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
@@ -93,13 +127,13 @@ export async function DELETE(req) {
     }
 
     await mongooseConnect();
-    const settings = await Settings.findOneAndUpdate(
-      { singletonKey: SETTINGS_KEY },
-      { $pull: { adminEmails: email } },
-      { new: true },
-    ).lean();
+    const settings = await Settings.findOne({ singletonKey: SETTINGS_KEY });
+    const nextSettings = settings || new Settings({ singletonKey: SETTINGS_KEY });
+    nextSettings.adminEmails = (nextSettings.adminEmails || []).filter((entry) => normalizeEmail(entry) !== email);
+    nextSettings.adminAccess = getDynamicAdminEntries(nextSettings).filter((entry) => entry.email !== email);
+    await nextSettings.save();
 
-    return NextResponse.json({ success: true, data: settings?.adminEmails || [] });
+    return NextResponse.json({ success: true, data: getDynamicAdminEntries(nextSettings) });
   } catch (error) {
     console.error('DELETE /api/settings/admins error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

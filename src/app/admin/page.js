@@ -5,6 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { getAdminDashboardData } from '@/lib/data';
 import { requireAdmin } from '@/lib/requireAdmin';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
 
 const statsConfig = [
   { title: 'Total Orders', icon: ShoppingBag, tone: 'bg-muted text-foreground', key: 'totalOrders' },
@@ -14,7 +15,7 @@ const statsConfig = [
 ];
 
 export default async function AdminDashboardPage() {
-  await requireAdmin();
+  await requireAdmin(ADMIN_PERMISSION.DASHBOARD_VIEW);
 
   return <DashboardContent />;
 }

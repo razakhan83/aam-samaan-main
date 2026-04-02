@@ -1,8 +1,8 @@
 // @ts-nocheck
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
+import { getAdminAccess } from '@/lib/requireAdmin';
 
 import mongooseConnect from '@/lib/mongooseConnect';
 import Settings from '@/models/Settings';
@@ -75,9 +75,9 @@ export async function GET() {
 // PUT update settings — Admin only
 export async function PUT(req) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || !session.user?.isAdmin) {
-            return NextResponse.json({ success: false, message: 'Unauthorized Access' }, { status: 401 });
+        const access = await getAdminAccess(ADMIN_PERMISSION.SETTINGS_UPDATE);
+        if (!access.ok) {
+            return NextResponse.json({ success: false, message: 'Unauthorized Access' }, { status: access.status });
         }
 
         await mongooseConnect();
@@ -133,4 +133,3 @@ export async function PUT(req) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
 }
-

@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { isAdminEmail, normalizeEmail } from "@/lib/admin";
+import { resolveAdminRole } from "@/lib/adminAccess";
 import mongooseConnect from "@/lib/mongooseConnect";
 import User from "@/models/User";
 
@@ -79,23 +80,22 @@ export const authOptions = {
       
       if (email) {
         token.email = normalizeEmail(email);
-        // Check env-configured admins first
-        let isAdmin = isAdminEmail(email);
+        let adminRole = isAdminEmail(email) ? 'full' : null;
         
-        // Also check dynamically managed admin emails stored in DB
-        if (!isAdmin) {
+        if (!adminRole) {
           try {
             const Settings = (await import('@/models/Settings')).default;
-            const settings = await Settings.findOne({ singletonKey: 'site-settings' }).select('adminEmails').lean();
-            if (settings?.adminEmails?.includes(normalizeEmail(email))) {
-              isAdmin = true;
-            }
+            const settings = await Settings.findOne({ singletonKey: 'site-settings' })
+              .select('adminEmails adminAccess')
+              .lean();
+            adminRole = resolveAdminRole(email, settings);
           } catch (err) {
             console.error('DB admin check failed:', err);
           }
         }
 
-        token.isAdmin = isAdmin;
+        token.isAdmin = Boolean(adminRole);
+        token.adminRole = adminRole;
 
         // Phase 2: Strict Session Validation
         // Avoid DB check for static admin if possible, but for regular users we must check status
@@ -133,6 +133,8 @@ export const authOptions = {
         session.user.email = normalizeEmail(session.user.email || token?.email);
         // @ts-ignore - isAdmin is custom
         session.user.isAdmin = Boolean(token?.isAdmin);
+        // @ts-ignore - adminRole is custom
+        session.user.adminRole = token?.adminRole || null;
       }
       return session;
     },

@@ -8,7 +8,9 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { ADMIN_ROLE, getAdminRoleLabel } from '@/lib/adminAccess';
 
 function normalizeAnnouncementMessages(messages = [], fallbackText = '') {
   const rawMessages = Array.isArray(messages) && messages.length > 0
@@ -48,8 +50,10 @@ function AdminAccessSection() {
   const [dynamicAdmins, setDynamicAdmins] = useState([]);
   const [loadingList, setLoadingList] = useState(true);
   const [newEmail, setNewEmail] = useState('');
+  const [newRole, setNewRole] = useState(ADMIN_ROLE.FULL);
   const [adding, setAdding] = useState(false);
   const [removingEmail, setRemovingEmail] = useState(null);
+  const [updatingRoleEmail, setUpdatingRoleEmail] = useState(null);
 
   useEffect(() => {
     async function fetchAdmins() {
@@ -79,17 +83,37 @@ function AdminAccessSection() {
       const res = await fetch('/api/settings/admins', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: trimmed }),
+        body: JSON.stringify({ email: trimmed, role: newRole }),
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.error || 'Failed to add admin');
       setDynamicAdmins(data.data);
       setNewEmail('');
-      toast.success(`${trimmed} added as admin.`);
+      setNewRole(ADMIN_ROLE.FULL);
+      toast.success(`${trimmed} added with ${getAdminRoleLabel(newRole).toLowerCase()}.`);
     } catch (error) {
       toast.error(error.message || 'Failed to add admin.');
     } finally {
       setAdding(false);
+    }
+  }
+
+  async function handleRoleChange(email, role) {
+    setUpdatingRoleEmail(email);
+    try {
+      const res = await fetch('/api/settings/admins', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, role }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Failed to update admin role');
+      setDynamicAdmins(data.data);
+      toast.success(`Updated ${email} to ${getAdminRoleLabel(role).toLowerCase()}.`);
+    } catch (error) {
+      toast.error(error.message || 'Failed to update admin role.');
+    } finally {
+      setUpdatingRoleEmail(null);
     }
   }
 
@@ -118,7 +142,7 @@ function AdminAccessSection() {
       title="Access Management"
       description="Configured admin accounts from environment variables always keep access. Additional admins can be managed here."
     >
-      <form onSubmit={handleAddAdmin} className="flex gap-2">
+      <form onSubmit={handleAddAdmin} className="grid gap-2 md:grid-cols-[minmax(0,1fr)_200px_auto]">
         <Input
           type="email"
           value={newEmail}
@@ -127,6 +151,15 @@ function AdminAccessSection() {
           className="rounded-md border-slate-300 flex-1"
           required
         />
+        <Select value={newRole} onValueChange={setNewRole}>
+          <SelectTrigger className="rounded-md">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ADMIN_ROLE.FULL}>Full Access</SelectItem>
+            <SelectItem value={ADMIN_ROLE.CATALOG}>Products & Orders</SelectItem>
+          </SelectContent>
+        </Select>
         <Button
           type="submit"
           disabled={adding || !newEmail.trim()}
@@ -179,30 +212,48 @@ function AdminAccessSection() {
               </p>
             ) : (
               <ul className="space-y-2">
-                {dynamicAdmins.map((email) => (
+                {dynamicAdmins.map((entry) => (
                   <li
-                    key={email}
-                    className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/35 px-4 py-2.5"
+                    key={entry.email}
+                    className="flex flex-col gap-3 rounded-lg border border-border bg-muted/35 px-4 py-3 md:flex-row md:items-center md:justify-between"
                   >
                     <div className="flex min-w-0 items-center gap-2">
                       <ShieldCheck className="size-4 shrink-0 text-primary" />
-                      <span className="truncate text-sm font-medium text-foreground">{email}</span>
+                      <div className="min-w-0">
+                        <span className="block truncate text-sm font-medium text-foreground">{entry.email}</span>
+                        <span className="text-xs text-muted-foreground">{getAdminRoleLabel(entry.role)}</span>
+                      </div>
                     </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-md text-destructive hover:bg-destructive/10 hover:text-destructive shrink-0"
-                      onClick={() => handleRemoveAdmin(email)}
-                      disabled={removingEmail === email}
-                      title={`Remove ${email}`}
-                    >
-                      {removingEmail === email ? (
-                        <Loader2 className="size-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="size-4" />
-                      )}
-                    </Button>
+                    <div className="flex items-center gap-2 md:shrink-0">
+                      <Select
+                        value={entry.role || ADMIN_ROLE.FULL}
+                        onValueChange={(role) => handleRoleChange(entry.email, role)}
+                        disabled={updatingRoleEmail === entry.email}
+                      >
+                        <SelectTrigger className="h-9 w-[190px] rounded-md">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={ADMIN_ROLE.FULL}>Full Access</SelectItem>
+                          <SelectItem value={ADMIN_ROLE.CATALOG}>Products & Orders</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-md text-destructive hover:bg-destructive/10 hover:text-destructive shrink-0"
+                        onClick={() => handleRemoveAdmin(entry.email)}
+                        disabled={removingEmail === entry.email}
+                        title={`Remove ${entry.email}`}
+                      >
+                        {removingEmail === entry.email ? (
+                          <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="size-4" />
+                        )}
+                      </Button>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -594,4 +645,3 @@ export default function AdminSettingsClient({ initialSettings, isConfiguredAdmin
     </div>
   );
 }
-

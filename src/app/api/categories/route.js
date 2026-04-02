@@ -1,8 +1,8 @@
 // @ts-nocheck
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
+import { getAdminAccess } from '@/lib/requireAdmin';
 
 import mongooseConnect from "@/lib/mongooseConnect";
 import { optimizeCloudinaryUrl } from "@/lib/cloudinaryImage";
@@ -56,9 +56,9 @@ export async function GET() {
 // POST new category
 export async function POST(req) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user?.isAdmin) {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    const access = await getAdminAccess(ADMIN_PERMISSION.CATEGORIES_CREATE);
+    if (!access.ok) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: access.status });
     }
 
     await mongooseConnect();
@@ -129,9 +129,9 @@ export async function POST(req) {
 // Body: { categories: [{ _id, sortOrder }, ...] }
 export async function PUT(req) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user?.isAdmin) {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    const access = await getAdminAccess(ADMIN_PERMISSION.CATEGORIES_UPDATE);
+    if (!access.ok) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: access.status });
     }
 
     await mongooseConnect();
@@ -175,9 +175,9 @@ export async function PUT(req) {
 // DELETE a category by _id (sent as query param)
 export async function DELETE(req) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user?.isAdmin) {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    const access = await getAdminAccess(ADMIN_PERMISSION.CATEGORIES_DELETE);
+    if (!access.ok) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: access.status });
     }
 
     await mongooseConnect();
@@ -219,4 +219,3 @@ export async function DELETE(req) {
     );
   }
 }
-

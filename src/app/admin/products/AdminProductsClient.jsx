@@ -208,6 +208,7 @@ export default function AdminProductsClient({
   initialStockFilter,
   initialSortOption,
   summary,
+  canDeleteProducts = true,
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -616,13 +617,15 @@ export default function AdminProductsClient({
                                 <MessageSquare className="mr-2 size-4" />
                                 Reviews
                               </DropdownMenuItem>
-                              <DropdownMenuItem
-                                className="text-destructive focus:bg-destructive cursor-pointer focus:text-destructive-foreground"
-                                onClick={() => setDeleteModal({ open: true, product })}
-                              >
-                                <Trash2 className="mr-2 size-4" />
-                                Delete
-                              </DropdownMenuItem>
+                              {canDeleteProducts ? (
+                                <DropdownMenuItem
+                                  className="text-destructive focus:bg-destructive cursor-pointer focus:text-destructive-foreground"
+                                  onClick={() => setDeleteModal({ open: true, product })}
+                                >
+                                  <Trash2 className="mr-2 size-4" />
+                                  Delete
+                                </DropdownMenuItem>
+                              ) : null}
                             </DropdownMenuGroup>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -754,13 +757,15 @@ export default function AdminProductsClient({
                         <MessageSquare className="mr-2 size-4" />
                         Reviews
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="text-destructive focus:bg-destructive cursor-pointer focus:text-destructive-foreground"
-                        onClick={() => setDeleteModal({ open: true, product })}
-                      >
-                        <Trash2 className="mr-2 size-4" />
-                        Delete
-                      </DropdownMenuItem>
+                      {canDeleteProducts ? (
+                        <DropdownMenuItem
+                          className="text-destructive focus:bg-destructive cursor-pointer focus:text-destructive-foreground"
+                          onClick={() => setDeleteModal({ open: true, product })}
+                        >
+                          <Trash2 className="mr-2 size-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      ) : null}
                     </DropdownMenuGroup>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -806,24 +811,26 @@ export default function AdminProductsClient({
         </div>
       )}
 
-      <AlertDialog open={deleteModal.open} onOpenChange={(open) => setDeleteModal((previous) => ({ ...previous, open }))}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete this product?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently remove <span className="font-semibold text-foreground">{deleteModal.product?.Name}</span>.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className={cn(buttonVariants({ variant: "outline" }))} onClick={() => setDeleteModal({ open: false, product: null })}>
-              Cancel
-            </AlertDialogCancel>
-            <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
-              {deleting ? "Deleting..." : "Delete Product"}
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {canDeleteProducts ? (
+        <AlertDialog open={deleteModal.open} onOpenChange={(open) => setDeleteModal((previous) => ({ ...previous, open }))}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete this product?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently remove <span className="font-semibold text-foreground">{deleteModal.product?.Name}</span>.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className={cn(buttonVariants({ variant: "outline" }))} onClick={() => setDeleteModal({ open: false, product: null })}>
+                Cancel
+              </AlertDialogCancel>
+              <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+                {deleting ? "Deleting..." : "Delete Product"}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      ) : null}
 
       <DiscountDialog
         open={discountModal.open}

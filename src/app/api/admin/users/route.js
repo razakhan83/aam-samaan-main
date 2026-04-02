@@ -1,16 +1,16 @@
 // @ts-nocheck
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
+import { getAdminAccess } from '@/lib/requireAdmin';
 
 import mongooseConnect from '@/lib/mongooseConnect';
 import User from '@/models/User';
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user?.isAdmin) {
-      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    const access = await getAdminAccess(ADMIN_PERMISSION.USERS_VIEW);
+    if (!access.ok) {
+      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: access.status });
     }
 
     await mongooseConnect();
@@ -27,4 +27,3 @@ export async function GET() {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
-

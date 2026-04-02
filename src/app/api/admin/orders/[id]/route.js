@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/requireAdmin';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
 import mongooseConnect from '@/lib/mongooseConnect';
 import Order from '@/models/Order';
 import OrderLog from '@/models/OrderLog';
@@ -8,7 +9,7 @@ import { authOptions } from '@/lib/auth';
 
 export async function PATCH(req, { params }) {
   try {
-    await requireAdmin();
+    await requireAdmin(ADMIN_PERMISSION.ORDERS_UPDATE);
     const { id } = await params;
     const body = await req.json();
     

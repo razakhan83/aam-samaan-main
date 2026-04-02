@@ -1,7 +1,7 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
+import { getAdminAccess } from '@/lib/requireAdmin';
 
 import mongooseConnect from '@/lib/mongooseConnect';
 import Category from '@/models/Category';
@@ -40,9 +40,9 @@ export async function GET(_request, { params }) {
 
 export async function PUT(request, { params }) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || !session.user?.isAdmin) {
-            return NextResponse.json({ success: false, message: 'Unauthorized Access' }, { status: 401 });
+        const access = await getAdminAccess(ADMIN_PERMISSION.PRODUCTS_UPDATE);
+        if (!access.ok) {
+            return NextResponse.json({ success: false, message: 'Unauthorized Access' }, { status: access.status });
         }
 
         await mongooseConnect();
@@ -135,9 +135,9 @@ export async function PUT(request, { params }) {
 // PATCH — discount-only update (dedicated endpoint, no full product reload needed)
 export async function PATCH(request, { params }) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || !session.user?.isAdmin) {
-            return NextResponse.json({ success: false, message: 'Unauthorized Access' }, { status: 401 });
+        const access = await getAdminAccess(ADMIN_PERMISSION.PRODUCTS_UPDATE);
+        if (!access.ok) {
+            return NextResponse.json({ success: false, message: 'Unauthorized Access' }, { status: access.status });
         }
 
         await mongooseConnect();
@@ -266,9 +266,9 @@ export async function PATCH(request, { params }) {
 // DELETE a product by ID - Protected Admin Route
 export async function DELETE(_request, { params }) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || !session.user?.isAdmin) {
-            return NextResponse.json({ success: false, message: 'Unauthorized Access' }, { status: 401 });
+        const access = await getAdminAccess(ADMIN_PERMISSION.PRODUCTS_DELETE);
+        if (!access.ok) {
+            return NextResponse.json({ success: false, message: 'Unauthorized Access' }, { status: access.status });
         }
 
         await mongooseConnect();

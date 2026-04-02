@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import AdminShippingClient from './AdminShippingClient';
 import { getAdminSettings } from '@/lib/data';
 import { requireAdmin } from '@/lib/requireAdmin';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
 
 export const metadata = {
   title: 'Shipping Management - Admin',
@@ -9,7 +10,7 @@ export const metadata = {
 };
 
 export default async function ShippingPage() {
-  await requireAdmin();
+  await requireAdmin(ADMIN_PERMISSION.SHIPPING_VIEW);
   const settings = await getAdminSettings();
 
   return (

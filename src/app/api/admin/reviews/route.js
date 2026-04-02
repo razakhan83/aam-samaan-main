@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { revalidateTag } from 'next/cache';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
 import { requireAdmin } from '@/lib/requireAdmin';
 import mongooseConnect from '@/lib/mongooseConnect';
 import Review from '@/models/Review';
 
 export async function GET() {
   try {
-    await requireAdmin();
+    await requireAdmin(ADMIN_PERMISSION.REVIEWS_VIEW);
     await mongooseConnect();
     
     const reviews = await Review.find({})
@@ -34,7 +35,7 @@ export async function GET() {
 
 export async function DELETE(req) {
   try {
-    await requireAdmin();
+    await requireAdmin(ADMIN_PERMISSION.REVIEWS_DELETE);
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
 

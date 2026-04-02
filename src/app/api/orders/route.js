@@ -2,8 +2,8 @@
 import { revalidateTag, updateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { after } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
+import { getAdminAccess } from '@/lib/requireAdmin';
 
 import mongooseConnect from '@/lib/mongooseConnect';
 import Order from '@/models/Order';
@@ -29,9 +29,9 @@ async function sendOrderNotificationEmail({ order, customerName }) {
 // GET all orders — Protected Admin Route
 export async function GET() {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || !session.user?.isAdmin) {
-            return NextResponse.json({ success: false, message: 'Unauthorized Access' }, { status: 401 });
+        const access = await getAdminAccess(ADMIN_PERMISSION.ORDERS_VIEW);
+        if (!access.ok) {
+            return NextResponse.json({ success: false, message: 'Unauthorized Access' }, { status: access.status });
         }
 
         await mongooseConnect();
@@ -87,4 +87,3 @@ export async function POST(req) {
         return NextResponse.json({ success: false, error: error.message }, { status: 400 });
     }
 }
-

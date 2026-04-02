@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
+import { getAdminAccess } from '@/lib/requireAdmin';
 
 import mongooseConnect from '@/lib/mongooseConnect';
 import Category from '@/models/Category';
@@ -22,9 +22,9 @@ function slugifyCategory(name = "") {
 
 export async function PATCH(req, { params }) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user?.isAdmin) {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    const access = await getAdminAccess(ADMIN_PERMISSION.CATEGORIES_UPDATE);
+    if (!access.ok) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: access.status });
     }
 
     await mongooseConnect();

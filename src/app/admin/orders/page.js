@@ -1,9 +1,10 @@
 import { getAdminOrdersPage } from '@/lib/data';
 import { requireAdmin } from '@/lib/requireAdmin';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
 import AdminOrdersWrapper from './AdminOrdersWrapper';
 
 export default async function AdminOrdersPage({ searchParams }) {
-  await requireAdmin();
+  await requireAdmin(ADMIN_PERMISSION.ORDERS_VIEW);
 
   const params = await searchParams;
   const search = String(params?.search || '').trim();

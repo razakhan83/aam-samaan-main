@@ -5,6 +5,7 @@ import { updateTag } from 'next/cache';
 import { after } from 'next/server';
 
 import { getConfiguredAdminEmails, normalizeEmail, normalizePhone, getPhoneRegex } from '@/lib/admin';
+import { ADMIN_PERMISSION, hasAdminPermission } from '@/lib/adminAccess';
 import { authOptions } from '@/lib/auth';
 import mongooseConnect from '@/lib/mongooseConnect';
 import { sendPurchaseTrackingEvents } from '@/lib/trackingServer';
@@ -72,10 +73,13 @@ function makeOrderId() {
   return `ORD-${Date.now().toString(36).toUpperCase()}${Math.random().toString(36).slice(2, 5).toUpperCase()}`;
 }
 
-async function assertAdmin() {
+async function assertAdmin(permission) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.isAdmin) {
     throw new Error('Unauthorized access');
+  }
+  if (permission && !hasAdminPermission(session.user?.adminRole, permission)) {
+    throw new Error('Forbidden');
   }
   return session;
 }
@@ -112,7 +116,7 @@ async function sendOrderEmails({ order, customerName, userEmail }) {
 }
 
 export async function toggleProductLiveAction(productId, nextValue) {
-  await assertAdmin();
+  await assertAdmin(ADMIN_PERMISSION.PRODUCTS_UPDATE);
   await mongooseConnect();
 
   const product = await Product.findById(productId);
@@ -134,7 +138,7 @@ export async function toggleProductLiveAction(productId, nextValue) {
 }
 
 export async function deleteProductAction(productId) {
-  await assertAdmin();
+  await assertAdmin(ADMIN_PERMISSION.PRODUCTS_DELETE);
   await mongooseConnect();
 
   const product = await Product.findByIdAndDelete(productId);
@@ -153,7 +157,7 @@ export async function deleteProductAction(productId) {
 }
 
 export async function setProductDiscountAction(productId, discountPercentage) {
-  await assertAdmin();
+  await assertAdmin(ADMIN_PERMISSION.PRODUCTS_UPDATE);
   await mongooseConnect();
 
   const product = await Product.findById(productId);
@@ -181,7 +185,7 @@ export async function setProductDiscountAction(productId, discountPercentage) {
 }
 
 export async function saveStoreSettingsAction(nextSettings) {
-  await assertAdmin();
+  await assertAdmin(ADMIN_PERMISSION.SETTINGS_UPDATE);
   await mongooseConnect();
 
   const allowedFields = [
@@ -442,7 +446,7 @@ export async function linkOrdersAction(phone) {
 }
 
 export async function updateOrderAction(id, updates) {
-  await assertAdmin();
+  await assertAdmin(ADMIN_PERMISSION.ORDERS_UPDATE);
   await mongooseConnect();
 
   try {

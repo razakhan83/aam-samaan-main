@@ -1,4 +1,5 @@
 import { requireAdmin } from '@/lib/requireAdmin';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
 import { getAdminReviewsPage } from '@/lib/data';
 import AdminReviewsClient from './AdminReviewsClient';
 
@@ -7,7 +8,7 @@ export const metadata = {
 };
 
 export default async function AdminReviewsPage({ searchParams }) {
-  await requireAdmin();
+  await requireAdmin(ADMIN_PERMISSION.REVIEWS_VIEW);
 
   const params = await searchParams;
   const search = String(params?.search || '').trim();

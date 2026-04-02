@@ -35,6 +35,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ADMIN_PERMISSION, getAdminRoleLabel, hasAdminPermission } from '@/lib/adminAccess';
 import { cn } from '@/lib/utils';
 
 const sidebarItems = [
@@ -43,6 +44,7 @@ const sidebarItems = [
     href: '/admin',
     label: 'Dashboard',
     icon: ChartColumn,
+    permission: ADMIN_PERMISSION.DASHBOARD_VIEW,
     match: (pathname) => pathname === '/admin',
   },
   {
@@ -55,10 +57,10 @@ const sidebarItems = [
       pathname.startsWith('/admin/categories') ||
       pathname.startsWith('/admin/reviews'),
     children: [
-      { href: '/admin/products', label: 'Product List', match: (pathname) => pathname === '/admin/products' },
-      { href: '/admin/products/add', label: 'Add Product', match: (pathname) => pathname === '/admin/products/add' },
-      { href: '/admin/categories', label: 'Categories', match: (pathname) => pathname.startsWith('/admin/categories') },
-      { href: '/admin/reviews', label: 'Reviews', match: (pathname) => pathname.startsWith('/admin/reviews') },
+      { href: '/admin/products', label: 'Product List', permission: ADMIN_PERMISSION.PRODUCTS_VIEW, match: (pathname) => pathname === '/admin/products' },
+      { href: '/admin/products/add', label: 'Add Product', permission: ADMIN_PERMISSION.PRODUCTS_CREATE, match: (pathname) => pathname === '/admin/products/add' },
+      { href: '/admin/categories', label: 'Categories', permission: ADMIN_PERMISSION.CATEGORIES_VIEW, match: (pathname) => pathname.startsWith('/admin/categories') },
+      { href: '/admin/reviews', label: 'Reviews', permission: ADMIN_PERMISSION.REVIEWS_VIEW, match: (pathname) => pathname.startsWith('/admin/reviews') },
     ],
   },
   {
@@ -66,9 +68,10 @@ const sidebarItems = [
     key: 'sales',
     label: 'Sales',
     icon: ShoppingCart,
+    permission: ADMIN_PERMISSION.ORDERS_VIEW,
     match: (pathname) => pathname.startsWith('/admin/orders'),
     children: [
-      { href: '/admin/orders', label: 'Orders', match: (pathname) => pathname.startsWith('/admin/orders') },
+      { href: '/admin/orders', label: 'Orders', permission: ADMIN_PERMISSION.ORDERS_VIEW, match: (pathname) => pathname.startsWith('/admin/orders') },
     ],
   },
   {
@@ -76,6 +79,7 @@ const sidebarItems = [
     href: '/admin/users',
     label: 'Users / Customers',
     icon: Users,
+    permission: ADMIN_PERMISSION.USERS_VIEW,
     match: (pathname) => pathname.startsWith('/admin/users'),
   },
   {
@@ -83,6 +87,7 @@ const sidebarItems = [
     href: '/admin/shipping',
     label: 'Shipping',
     icon: Truck,
+    permission: ADMIN_PERMISSION.SHIPPING_VIEW,
     match: (pathname) => pathname.startsWith('/admin/shipping'),
   },
   {
@@ -90,6 +95,7 @@ const sidebarItems = [
     href: '/admin/cover-photos',
     label: 'Cover Photos',
     icon: Images,
+    permission: ADMIN_PERMISSION.COVER_PHOTOS_VIEW,
     match: (pathname) => pathname.startsWith('/admin/cover-photos'),
   },
   {
@@ -97,12 +103,13 @@ const sidebarItems = [
     href: '/admin/settings',
     label: 'Settings',
     icon: Settings,
+    permission: ADMIN_PERMISSION.SETTINGS_VIEW,
     match: (pathname) => pathname.startsWith('/admin/settings'),
   },
 ];
 
-function getInitialSectionState(pathname) {
-  return sidebarItems.reduce((state, item) => {
+function getInitialSectionState(pathname, items = sidebarItems) {
+  return items.reduce((state, item) => {
     if (item.type === 'section') {
       state[item.key] = item.match(pathname);
     }
@@ -110,8 +117,8 @@ function getInitialSectionState(pathname) {
   }, {});
 }
 
-function getCurrentPageLabel(pathname) {
-  for (const item of sidebarItems) {
+function getCurrentPageLabel(pathname, items = sidebarItems) {
+  for (const item of items) {
     if (item.type === 'link' && item.match(pathname)) {
       return item.label;
     }
@@ -158,17 +165,34 @@ function getAdminThemeServerSnapshot() {
 
 export default function AdminLayoutShell({ children, sessionUser }) {
   const pathname = usePathname();
+  const adminRole = sessionUser?.adminRole || null;
+  const visibleSidebarItems = useMemo(() => (
+    sidebarItems.reduce((items, item) => {
+      const canSeeItem = !item.permission || hasAdminPermission(adminRole, item.permission);
+      if (!canSeeItem) return items;
+
+      if (item.type === 'section') {
+        const children = item.children.filter((child) => !child.permission || hasAdminPermission(adminRole, child.permission));
+        if (children.length === 0) return items;
+        items.push({ ...item, children });
+        return items;
+      }
+
+      items.push(item);
+      return items;
+    }, [])
+  ), [adminRole]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [openSections, setOpenSections] = useState(() => getInitialSectionState(pathname));
+  const [openSections, setOpenSections] = useState(() => getInitialSectionState(pathname, visibleSidebarItems));
   const adminTheme = useSyncExternalStore(
     subscribeToAdminTheme,
     getAdminThemeSnapshot,
     getAdminThemeServerSnapshot
   );
-  const previousSectionMatchesRef = useRef(getInitialSectionState(pathname));
+  const previousSectionMatchesRef = useRef(getInitialSectionState(pathname, visibleSidebarItems));
 
   useEffect(() => {
-    const currentSectionMatches = getInitialSectionState(pathname);
+    const currentSectionMatches = getInitialSectionState(pathname, visibleSidebarItems);
 
     setOpenSections((previous) => {
       let changed = false;
@@ -184,7 +208,7 @@ export default function AdminLayoutShell({ children, sessionUser }) {
       previousSectionMatchesRef.current = currentSectionMatches;
       return changed ? next : previous;
     });
-  }, [pathname]);
+  }, [pathname, visibleSidebarItems]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -203,7 +227,7 @@ export default function AdminLayoutShell({ children, sessionUser }) {
     };
   }, [adminTheme]);
 
-  const currentPageLabel = useMemo(() => getCurrentPageLabel(pathname), [pathname]);
+  const currentPageLabel = useMemo(() => getCurrentPageLabel(pathname, visibleSidebarItems), [pathname, visibleSidebarItems]);
 
   if (pathname === '/admin/login') return <>{children}</>;
 
@@ -222,7 +246,7 @@ export default function AdminLayoutShell({ children, sessionUser }) {
       </div>
 
       <nav className="mt-5 flex flex-col gap-1.5">
-        {sidebarItems.map((item) => {
+        {visibleSidebarItems.map((item) => {
           if (item.type === 'link') {
             const Icon = item.icon;
             const active = item.match(pathname);
@@ -333,6 +357,7 @@ export default function AdminLayoutShell({ children, sessionUser }) {
           <div className="min-w-0">
             <p className="truncate text-sm font-medium text-foreground">{sessionUser?.name || 'Admin'}</p>
             <p className="truncate text-xs text-muted-foreground">{sessionUser?.email}</p>
+            {adminRole ? <p className="truncate text-[11px] text-muted-foreground">{getAdminRoleLabel(adminRole)}</p> : null}
           </div>
         </div>
 
@@ -424,6 +449,7 @@ export default function AdminLayoutShell({ children, sessionUser }) {
                           <div className="flex flex-col gap-1">
                             <p className="text-sm font-medium leading-none">{sessionUser?.name || 'Admin'}</p>
                             <p className="text-xs leading-none text-muted-foreground">{sessionUser?.email}</p>
+                            {adminRole ? <p className="text-[11px] leading-none text-muted-foreground">{getAdminRoleLabel(adminRole)}</p> : null}
                           </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />

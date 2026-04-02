@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
+import { getAdminAccess } from '@/lib/requireAdmin';
 
 import mongooseConnect from '@/lib/mongooseConnect';
 import Order from '@/models/Order';
@@ -10,11 +10,11 @@ import Product from '@/models/Product';
 export async function GET(request) {
     try {
         void request.headers.get('host');
-        const session = await getServerSession(authOptions);
-        if (!session || !session.user?.isAdmin) {
+        const access = await getAdminAccess(ADMIN_PERMISSION.DASHBOARD_VIEW);
+        if (!access.ok) {
             return NextResponse.json(
                 { success: false, message: 'Unauthorized Access' },
-                { status: 401 }
+                { status: access.status }
             );
         }
 
@@ -140,4 +140,3 @@ export async function GET(request) {
         );
     }
 }
-

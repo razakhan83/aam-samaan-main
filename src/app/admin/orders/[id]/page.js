@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { getOrderById, getOrderLogs } from '@/lib/data';
 import { requireAdmin } from '@/lib/requireAdmin';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
 import OrderDetailActions from './OrderDetailActions';
 
 const statusVariant = {
@@ -20,7 +21,7 @@ const statusVariant = {
 
 export default async function AdminOrderDetailPage({ params }) {
   await connection();
-  await requireAdmin();
+  await requireAdmin(ADMIN_PERMISSION.ORDERS_VIEW);
   const { id } = await params;
 
   return <OrderDetailContent id={id} />;

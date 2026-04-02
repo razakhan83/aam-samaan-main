@@ -1,7 +1,7 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { ADMIN_PERMISSION } from '@/lib/adminAccess';
+import { getAdminAccess } from '@/lib/requireAdmin';
 
 import mongooseConnect from '@/lib/mongooseConnect';
 import Category from '@/models/Category';
@@ -48,11 +48,9 @@ export async function GET() {
 // POST new product - Protected Admin Route
 export async function POST(req) {
     try {
-        // Validation: Verify if the requester is the authorized Admin
-        const session = await getServerSession(authOptions);
-
-        if (!session || !session.user?.isAdmin) {
-            return NextResponse.json({ success: false, message: 'Unauthorized Access' }, { status: 401 });
+        const access = await getAdminAccess(ADMIN_PERMISSION.PRODUCTS_CREATE);
+        if (!access.ok) {
+            return NextResponse.json({ success: false, message: 'Unauthorized Access' }, { status: access.status });
         }
 
         await mongooseConnect();
