@@ -128,7 +128,14 @@ async function ProductsResultsContent({ productsPromise }) {
                 className="products-grid-card"
                 style={{ '--products-card-delay': `${Math.min(index, 7) * 48}ms` }}
               >
-                <ProductCard product={product} />
+                <ProductCard
+                  product={product}
+                  sharedImageTransitionName={
+                    product.slug || product._id || product.id
+                      ? `products-grid-image-${product.slug || product._id || product.id}`
+                      : undefined
+                  }
+                />
               </div>
             ))}
             {Array.from({ length: placeholderCount }).map((_, index) => (

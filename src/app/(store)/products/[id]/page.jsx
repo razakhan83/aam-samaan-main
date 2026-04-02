@@ -271,7 +271,9 @@ function ProductHeroSection({ product, settings, reviewSummary }) {
   const price = Number(product.discountedPrice ?? product.Price ?? 0);
   const availability = product.StockStatus === 'In Stock' ? 'in stock' : 'out of stock';
   const isOutOfStock = product.StockStatus === 'Out of Stock' || product.isLive === false;
-  const sharedImageTransitionName = product.slug || product._id ? `product-image-${product.slug || product._id}` : undefined;
+  const sharedImageTransitionName = product.slug || product._id
+    ? `products-grid-image-${product.slug || product._id}`
+    : undefined;
 
   return (
     <>
