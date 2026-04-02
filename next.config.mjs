@@ -13,6 +13,7 @@ const nextConfig = {
   },
   reactCompiler: true,
   experimental: {
+    viewTransition: true,
     turbopackFileSystemCacheForDev: true,
     turbopackFileSystemCacheForBuild: true,
     cachedNavigations: true,

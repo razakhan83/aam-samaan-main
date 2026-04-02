@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, ViewTransition } from 'react';
 import { BadgeCheck, PackageCheck, Truck } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
@@ -192,44 +192,56 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function ProductPage({ params }) {
-  const slugPromise = params.then(({ id }) => id);
+export default async function ProductPage({ params }) {
+  const { id } = await params;
+  const pageData = await getProductPageData(id);
 
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto max-w-7xl px-4 pb-2 pt-4">
-        <Suspense fallback={<ProductBreadcrumbSkeleton />}>
-          <ProductBreadcrumb slugPromise={slugPromise} />
-        </Suspense>
-      </div>
-
-      <div className="container mx-auto max-w-7xl px-4 pb-20 pt-4 md:py-8">
-        <Suspense fallback={<ProductHeroSkeleton />}>
-          <ProductHeroSection slugPromise={slugPromise} />
-        </Suspense>
-
-        <div className="mb-4 mt-12">
-          <Suspense fallback={<ProductReviewsSkeleton />}>
-            <ProductReviewsSection slugPromise={slugPromise} />
-          </Suspense>
-        </div>
-      </div>
-
-      <Suspense fallback={<RelatedProductsSkeleton />}>
-        <RelatedProductsSection slugPromise={slugPromise} />
-      </Suspense>
-    </div>
-  );
-}
-
-async function ProductBreadcrumb({ slugPromise }) {
-  const slug = await slugPromise;
-  const product = await getProductBySlug(slug);
-
-  if (!product) {
+  if (!pageData) {
     notFound();
   }
 
+  const { product, settings, reviewSummary } = pageData;
+
+  return (
+    <ViewTransition
+      enter={{
+        'nav-forward': 'nav-forward',
+        'nav-back': 'nav-back',
+        default: 'none',
+      }}
+      exit={{
+        'nav-forward': 'nav-forward',
+        'nav-back': 'nav-back',
+        default: 'none',
+      }}
+      default="none"
+    >
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto max-w-7xl px-4 pb-2 pt-4">
+          <ProductBreadcrumb product={product} />
+        </div>
+
+        <div className="container mx-auto max-w-7xl px-4 pb-20 pt-4 md:py-8">
+          <ProductHeroSection
+            product={product}
+            settings={settings}
+            reviewSummary={reviewSummary}
+          />
+
+          <div className="mb-4 mt-12">
+            <ProductReviewsSection product={product} />
+          </div>
+        </div>
+
+        <Suspense fallback={<RelatedProductsSkeleton />}>
+          <RelatedProductsSection product={product} />
+        </Suspense>
+      </div>
+    </ViewTransition>
+  );
+}
+
+function ProductBreadcrumb({ product }) {
   return (
     <Breadcrumb>
       <BreadcrumbList>
@@ -238,7 +250,9 @@ async function ProductBreadcrumb({ slugPromise }) {
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink href="/products">Products</BreadcrumbLink>
+          <BreadcrumbLink href="/products" transitionTypes={['nav-back']}>
+            Products
+          </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
@@ -249,16 +263,7 @@ async function ProductBreadcrumb({ slugPromise }) {
   );
 }
 
-async function ProductHeroSection({ slugPromise }) {
-  const slug = await slugPromise;
-  const pageData = await getProductPageData(slug);
-
-  if (!pageData) {
-    notFound();
-  }
-
-  const { product, settings, reviewSummary } = pageData;
-
+function ProductHeroSection({ product, settings, reviewSummary }) {
   const primaryCategory = getProductCategories(product)[0];
   const categoryLabel = primaryCategory?.name || '';
   const colors = getCategoryColor(categoryLabel);
@@ -266,6 +271,7 @@ async function ProductHeroSection({ slugPromise }) {
   const price = Number(product.discountedPrice ?? product.Price ?? 0);
   const availability = product.StockStatus === 'In Stock' ? 'in stock' : 'out of stock';
   const isOutOfStock = product.StockStatus === 'Out of Stock' || product.isLive === false;
+  const sharedImageTransitionName = product.slug || product._id ? `product-image-${product.slug || product._id}` : undefined;
 
   return (
     <>
@@ -294,7 +300,10 @@ async function ProductHeroSection({ slugPromise }) {
 
       <div className="flex flex-col gap-6 md:flex-row md:gap-10 lg:gap-14">
         <div className="w-full md:w-[55%] lg:w-[58%]">
-          <ProductGallery images={product.Images} />
+          <ProductGallery
+            images={product.Images}
+            sharedImageTransitionName={sharedImageTransitionName}
+          />
         </div>
 
         <div className="w-full md:w-[45%] lg:w-[42%]">
@@ -383,25 +392,11 @@ async function ProductHeroSection({ slugPromise }) {
   );
 }
 
-async function ProductReviewsSection({ slugPromise }) {
-  const slug = await slugPromise;
-  const product = await getProductBySlug(slug);
-
-  if (!product) {
-    notFound();
-  }
-
+function ProductReviewsSection({ product }) {
   return <ProductReviews productId={product._id} productName={product.Name} />;
 }
 
-async function RelatedProductsSection({ slugPromise }) {
-  const slug = await slugPromise;
-  const product = await getProductBySlug(slug);
-
-  if (!product) {
-    notFound();
-  }
-
+async function RelatedProductsSection({ product }) {
   const primaryCategory = getProductCategories(product)[0];
   const categorySlug = primaryCategory?.id || '';
   const categoryLabel = primaryCategory?.name || 'this collection';

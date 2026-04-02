@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, ViewTransition } from 'react';
 import { SearchX } from 'lucide-react';
 
 import ProductCard from '@/components/ProductCard';
@@ -65,26 +65,40 @@ export default async function ProductsPage({ searchParams }) {
 
   return (
     <ProductsNavigationFeedbackProvider>
-      <div>
-        <ProductsPageHeader
-          categories={categories}
-          activeCategory={resolvedSearchParams.category || 'all'}
-          searchTerm={resolvedSearchParams.search || ''}
-          sort={resolvedSearchParams.sort || 'newest'}
-        />
-        <ProductsToolbar
-          initialSearch={resolvedSearchParams.search || ''}
-          initialSort={resolvedSearchParams.sort || 'newest'}
-        />
-        <section className="mx-auto max-w-7xl px-4 py-6">
-          <Suspense key={buildSuspenseKey(resolvedSearchParams)} fallback={<ProductsGridSkeleton />}>
-            <ProductsResultsContent productsPromise={productsPromise} />
-          </Suspense>
-          <Suspense fallback={null}>
-            <ProductsPaginationContent productsPromise={productsPromise} />
-          </Suspense>
-        </section>
-      </div>
+      <ViewTransition
+        enter={{
+          'nav-forward': 'nav-forward',
+          'nav-back': 'nav-back',
+          default: 'none',
+        }}
+        exit={{
+          'nav-forward': 'nav-forward',
+          'nav-back': 'nav-back',
+          default: 'none',
+        }}
+        default="none"
+      >
+        <div>
+          <ProductsPageHeader
+            categories={categories}
+            activeCategory={resolvedSearchParams.category || 'all'}
+            searchTerm={resolvedSearchParams.search || ''}
+            sort={resolvedSearchParams.sort || 'newest'}
+          />
+          <ProductsToolbar
+            initialSearch={resolvedSearchParams.search || ''}
+            initialSort={resolvedSearchParams.sort || 'newest'}
+          />
+          <section className="mx-auto max-w-7xl px-4 py-6">
+            <Suspense key={buildSuspenseKey(resolvedSearchParams)} fallback={<ProductsGridSkeleton />}>
+              <ProductsResultsContent productsPromise={productsPromise} />
+            </Suspense>
+            <Suspense fallback={null}>
+              <ProductsPaginationContent productsPromise={productsPromise} />
+            </Suspense>
+          </section>
+        </div>
+      </ViewTransition>
     </ProductsNavigationFeedbackProvider>
   );
 }

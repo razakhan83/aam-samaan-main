@@ -216,7 +216,10 @@ function NavbarContent({
   const showAnnouncementBar = announcementBarEnabled && announcementItems.length > 0;
 
   return (
-    <div className="navbar-shell sticky top-0 z-40 border-b border-border/60 bg-card/95 backdrop-blur">
+    <div
+      className="navbar-shell sticky top-0 z-40 border-b border-border/60 bg-card/95 backdrop-blur"
+      style={{ viewTransitionName: 'persistent-nav' }}
+    >
       {showAnnouncementBar ? (
         <div className="relative flex min-h-9 items-center border-b border-border/60 bg-primary py-2 text-primary-foreground">
           <AnnouncementMarquee items={announcementItems} />

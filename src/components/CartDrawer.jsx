@@ -107,7 +107,11 @@ export default function CartDrawer({ whatsappNumber = '', storeName = 'Aam Samaa
 
   return (
     <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
-      <SheetContent side="right" className="w-screen min-w-0 max-w-none gap-0 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-card)_97%,white),color-mix(in_oklab,var(--color-muted)_38%,white))] p-0 sm:max-w-none md:w-[min(70vw,28rem)] md:min-w-[18rem] md:max-w-[28rem]">
+      <SheetContent
+        side="right"
+        initialFocus={false}
+        className="w-screen min-w-0 max-w-none gap-0 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-card)_97%,white),color-mix(in_oklab,var(--color-muted)_38%,white))] p-0 sm:max-w-none md:w-[min(70vw,28rem)] md:min-w-[18rem] md:max-w-[28rem]"
+      >
         <SheetHeader className="border-b border-border/70 px-5 pb-3 pt-5">
           <SheetTitle className="[text-wrap:balance]">Your Cart</SheetTitle>
           <SheetDescription className="[text-wrap:pretty]">
