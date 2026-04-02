@@ -85,7 +85,7 @@ async function DashboardContent() {
       </section>
 
       <section className="grid grid-cols-1 gap-4 md:hidden">
-        <Card className="admin-dashboard-panel surface-card order-2 border-border/70 xl:order-1">
+        <Card className="admin-dashboard-panel surface-card order-2 border-border/70 md:order-1">
           <CardHeader className="flex flex-col gap-3 pb-3 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle className="admin-dashboard-heading flex items-center gap-2 text-lg text-foreground">
               <Inbox className="text-foreground" />
@@ -123,8 +123,8 @@ async function DashboardContent() {
         </Card>
       </section>
 
-      <section className="grid grid-cols-1 gap-4 xl:grid-cols-[1.3fr_0.7fr]">
-        <Card className="admin-dashboard-panel surface-card order-1 border-border/70 xl:order-2">
+      <section className="grid grid-cols-1 gap-4 md:grid-cols-[1.3fr_0.7fr]">
+        <Card className="admin-dashboard-panel surface-card border-border/70">
           <CardHeader className="pb-3">
             <CardTitle className="admin-dashboard-heading flex items-center gap-2 text-lg text-foreground">
               <TrendingUp className="text-foreground" />

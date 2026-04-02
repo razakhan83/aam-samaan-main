@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 
 import AdminNotificationCenter from '@/components/AdminNotificationCenter';
+import AdminSmartSearch from '@/components/AdminSmartSearch';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -406,6 +407,7 @@ export default function AdminLayoutShell({ children, sessionUser }) {
               </div>
 
               <div className="flex items-center gap-2 md:gap-3">
+                <AdminSmartSearch />
                 <Button
                   type="button"
                   variant="outline"

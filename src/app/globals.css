@@ -537,6 +537,54 @@
     color: #09090b !important;
   }
 
+  .admin-theme-light .admin-smart-search,
+  .admin-theme-light.admin-shell .admin-smart-search {
+    background: #ffffff !important;
+    border: 1px solid #e4e4e7 !important;
+  }
+
+  .admin-theme-dark .admin-smart-search,
+  .admin-theme-dark.admin-shell .admin-smart-search {
+    background: #121212 !important;
+    border: 1px solid #27272a !important;
+  }
+
+  .admin-theme-light .admin-smart-search-item,
+  .admin-theme-light.admin-shell .admin-smart-search-item {
+    background: transparent !important;
+  }
+
+  .admin-theme-light .admin-smart-search-item[data-selected="true"],
+  .admin-theme-light.admin-shell .admin-smart-search-item[data-selected="true"] {
+    background: #f4f4f5 !important;
+    color: #09090b !important;
+  }
+
+  .admin-theme-dark .admin-smart-search-item,
+  .admin-theme-dark.admin-shell .admin-smart-search-item {
+    background: transparent !important;
+  }
+
+  .admin-theme-dark .admin-smart-search-item[data-selected="true"],
+  .admin-theme-dark.admin-shell .admin-smart-search-item[data-selected="true"] {
+    background: #18181b !important;
+    color: #fafafa !important;
+  }
+
+  .admin-theme-light .admin-smart-search-icon,
+  .admin-theme-light.admin-shell .admin-smart-search-icon {
+    background: #f4f4f5 !important;
+    border: 1px solid #e4e4e7;
+    color: #18181b !important;
+  }
+
+  .admin-theme-dark .admin-smart-search-icon,
+  .admin-theme-dark.admin-shell .admin-smart-search-icon {
+    background: #18181b !important;
+    border: 1px solid #27272a;
+    color: #fafafa !important;
+  }
+
   .admin-theme-light .admin-shell .bg-card,
   .admin-theme-light .admin-shell .bg-background,
   .admin-theme-light .admin-shell .bg-input {
