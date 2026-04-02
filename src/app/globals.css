@@ -227,6 +227,24 @@
     border-color: #27272a !important;
   }
 
+  .admin-theme-light [data-slot="sheet-content"],
+  .admin-theme-light [data-slot="dropdown-menu-content"],
+  .admin-theme-light [data-slot="popover-content"],
+  .admin-theme-light [data-slot="dialog-content"] {
+    background: #ffffff !important;
+    color: #09090b !important;
+    border-color: #e4e4e7 !important;
+  }
+
+  .admin-theme-dark [data-slot="sheet-content"],
+  .admin-theme-dark [data-slot="dropdown-menu-content"],
+  .admin-theme-dark [data-slot="popover-content"],
+  .admin-theme-dark [data-slot="dialog-content"] {
+    background: #121212 !important;
+    color: #fafafa !important;
+    border-color: #27272a !important;
+  }
+
   .surface-card {
     background: color-mix(in oklab, var(--color-card) 92%, white);
     border: 1px solid color-mix(in oklab, var(--color-border) 88%, white);
@@ -298,9 +316,21 @@
     background-color: #ffffff !important;
   }
 
+  .admin-theme-light .bg-card,
+  .admin-theme-light .bg-background,
+  .admin-theme-light .bg-input {
+    background-color: #ffffff !important;
+  }
+
   .admin-theme-dark .admin-shell .bg-card,
   .admin-theme-dark .admin-shell .bg-background,
   .admin-theme-dark .admin-shell .bg-input {
+    background-color: #121212 !important;
+  }
+
+  .admin-theme-dark .bg-card,
+  .admin-theme-dark .bg-background,
+  .admin-theme-dark .bg-input {
     background-color: #121212 !important;
   }
 
@@ -317,6 +347,19 @@
     background-color: #f4f4f5 !important;
   }
 
+  .admin-theme-light .bg-muted,
+  .admin-theme-light .bg-muted\/20,
+  .admin-theme-light .bg-muted\/25,
+  .admin-theme-light .bg-muted\/30,
+  .admin-theme-light .bg-muted\/35,
+  .admin-theme-light .bg-muted\/40,
+  .admin-theme-light .bg-muted\/50,
+  .admin-theme-light .bg-muted\/55,
+  .admin-theme-light .bg-muted\/60,
+  .admin-theme-light .bg-muted\/70 {
+    background-color: #f4f4f5 !important;
+  }
+
   .admin-theme-dark .admin-shell .bg-muted,
   .admin-theme-dark .admin-shell .bg-muted\/20,
   .admin-theme-dark .admin-shell .bg-muted\/25,
@@ -330,7 +373,24 @@
     background-color: #27272a !important;
   }
 
+  .admin-theme-dark .bg-muted,
+  .admin-theme-dark .bg-muted\/20,
+  .admin-theme-dark .bg-muted\/25,
+  .admin-theme-dark .bg-muted\/30,
+  .admin-theme-dark .bg-muted\/35,
+  .admin-theme-dark .bg-muted\/40,
+  .admin-theme-dark .bg-muted\/50,
+  .admin-theme-dark .bg-muted\/55,
+  .admin-theme-dark .bg-muted\/60,
+  .admin-theme-dark .bg-muted\/70 {
+    background-color: #27272a !important;
+  }
+
   .admin-theme-light .admin-shell .text-foreground {
+    color: #09090b !important;
+  }
+
+  .admin-theme-light .text-foreground {
     color: #09090b !important;
   }
 
@@ -338,7 +398,15 @@
     color: #fafafa !important;
   }
 
+  .admin-theme-dark .text-foreground {
+    color: #fafafa !important;
+  }
+
   .admin-theme-light .admin-shell .text-muted-foreground {
+    color: #71717a !important;
+  }
+
+  .admin-theme-light .text-muted-foreground {
     color: #71717a !important;
   }
 
@@ -346,7 +414,15 @@
     color: #a1a1aa !important;
   }
 
+  .admin-theme-dark .text-muted-foreground {
+    color: #a1a1aa !important;
+  }
+
   .admin-theme-light .admin-shell .border-border {
+    border-color: #e4e4e7 !important;
+  }
+
+  .admin-theme-light .border-border {
     border-color: #e4e4e7 !important;
   }
 
@@ -354,7 +430,15 @@
     border-color: #27272a !important;
   }
 
+  .admin-theme-dark .border-border {
+    border-color: #27272a !important;
+  }
+
   .admin-theme-light .admin-shell .text-primary {
+    color: #18181b !important;
+  }
+
+  .admin-theme-light .text-primary {
     color: #18181b !important;
   }
 
@@ -362,11 +446,23 @@
     color: #fafafa !important;
   }
 
+  .admin-theme-dark .text-primary {
+    color: #fafafa !important;
+  }
+
   .admin-theme-light .admin-shell .text-primary-foreground {
     color: #ffffff !important;
   }
 
+  .admin-theme-light .text-primary-foreground {
+    color: #ffffff !important;
+  }
+
   .admin-theme-dark .admin-shell .text-primary-foreground {
+    color: #09090b !important;
+  }
+
+  .admin-theme-dark .text-primary-foreground {
     color: #09090b !important;
   }
 
