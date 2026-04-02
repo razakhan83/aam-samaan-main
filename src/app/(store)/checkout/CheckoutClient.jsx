@@ -8,13 +8,10 @@ import {
   Check,
   CheckCircle2,
   ChevronsUpDown,
-  Clock3,
   Copy,
   Loader2,
   Lock,
   MapPin,
-  ShieldCheck,
-  Truck,
   Wallet,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -67,7 +64,7 @@ const formatPriceLabel = (raw) => `Rs. ${formatPrice(raw).toLocaleString('en-PK'
 export default function CheckoutClient({ settings }) {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const { cart } = useCartItems();
+  const { cart, isInitialized = false } = useCartItems();
   const { clearCart } = useCartActions();
   const [hasAutoFilled, setHasAutoFilled] = useState(false);
   const [formData, setFormData] = useState({
@@ -87,6 +84,7 @@ export default function CheckoutClient({ settings }) {
   const [copied, setCopied] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [hasTrackedCheckoutView, setHasTrackedCheckoutView] = useState(false);
+  const activeCart = useMemo(() => (isInitialized ? cart : []), [cart, isInitialized]);
 
   useEffect(() => {
     let isMounted = true;
@@ -161,10 +159,10 @@ export default function CheckoutClient({ settings }) {
       : 'Outside Karachi rates are shown before confirmation.';
 
   useEffect(() => {
-    if (hasTrackedCheckoutView || cart.length === 0) return;
-    trackInitiateCheckoutEvent({ cart, total });
+    if (!isInitialized || hasTrackedCheckoutView || activeCart.length === 0) return;
+    trackInitiateCheckoutEvent({ cart: activeCart, total });
     setHasTrackedCheckoutView(true);
-  }, [cart, hasTrackedCheckoutView, total]);
+  }, [activeCart, hasTrackedCheckoutView, isInitialized, total]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -210,7 +208,7 @@ export default function CheckoutClient({ settings }) {
 
   function handlePlaceOrder(event) {
     event.preventDefault();
-    if (!validateForm() || cart.length === 0) return;
+    if (!validateForm() || activeCart.length === 0) return;
 
     setSubmitting(true);
     startTransition(async () => {
@@ -227,7 +225,7 @@ export default function CheckoutClient({ settings }) {
           updateProfile: true,
           totalAmount: total,
           whatsappNumber: settings.whatsappNumber,
-          items: cart.map((item) => ({
+          items: activeCart.map((item) => ({
             productId: item.id || item._id || item.slug,
             name: item.Name || item.name,
             price: item.discountedPrice != null ? item.discountedPrice : item.Price || item.price,
@@ -236,7 +234,7 @@ export default function CheckoutClient({ settings }) {
           })),
         });
 
-        trackPurchaseEvent({ orderId: result.orderId, cart, total });
+        trackPurchaseEvent({ orderId: result.orderId, cart: activeCart, total });
         setOrderState(result);
         clearCart();
       } catch (error) {
@@ -250,7 +248,22 @@ export default function CheckoutClient({ settings }) {
     });
   }
 
-  if (cart.length === 0 && !orderState.orderId) {
+  if (!isInitialized && !orderState.orderId) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-background px-4">
+        <Empty className="surface-card w-full max-w-md rounded-[1.4rem] border border-border/80 py-10 shadow-[0_24px_60px_-42px_color-mix(in_oklab,var(--color-primary)_28%,transparent)]">
+          <EmptyHeader>
+            <EmptyTitle className="text-2xl font-bold text-foreground [text-wrap:balance]">Loading checkout</EmptyTitle>
+            <EmptyDescription className="[text-wrap:pretty]">
+              Preparing your cart for checkout.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      </main>
+    );
+  }
+
+  if (activeCart.length === 0 && !orderState.orderId) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-background px-4">
         <Empty className="surface-card w-full max-w-md rounded-[1.4rem] border border-border/80 py-10 shadow-[0_24px_60px_-42px_color-mix(in_oklab,var(--color-primary)_28%,transparent)]">
@@ -334,30 +347,6 @@ export default function CheckoutClient({ settings }) {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-
-        <section className={cn('mb-8 md:mb-10', styles.intro, styles.enter)} style={{ '--checkout-delay': '40ms' }}>
-          <span className={styles.eyebrow}>Final step</span>
-          <div className="space-y-3">
-            <h1 className={cn('text-3xl font-bold tracking-tight text-foreground sm:text-4xl', styles.title)}>Secure Checkout</h1>
-            <p className={styles.lede}>
-              Review your delivery details, confirm cash on delivery, and place your order with a clear breakdown before we finalize it.
-            </p>
-          </div>
-          <div className={styles.factGrid}>
-            <div className={styles.factCard}>
-              <span className={styles.factLabel}>Payment</span>
-              <span className={styles.factValue}>Cash on delivery</span>
-            </div>
-            <div className={styles.factCard}>
-              <span className={styles.factLabel}>Delivery</span>
-              <span className={styles.factValue}>2 to 3 working days</span>
-            </div>
-            <div className={styles.factCard}>
-              <span className={styles.factLabel}>Support</span>
-              <span className={styles.factValue}>Server-side order confirmation</span>
-            </div>
-          </div>
-        </section>
 
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
           <div className="space-y-6 lg:col-span-7">
@@ -522,7 +511,6 @@ export default function CheckoutClient({ settings }) {
 
             <Card className={cn(styles.sectionCard, styles.enter)} style={{ '--checkout-delay': '150ms' }}>
               <CardHeader className={styles.sectionHeader}>
-                <span className={styles.sectionKicker}>Payment</span>
                 <CardTitle className={cn('flex items-center gap-2 text-xl', styles.sectionTitle)}>
                   <Wallet className="size-5 text-primary" />
                   Payment Method
@@ -532,9 +520,6 @@ export default function CheckoutClient({ settings }) {
                 <Alert className="rounded-[1.15rem] border-border/70 bg-[color:color-mix(in_oklab,var(--color-card)_92%,white)] shadow-[0_18px_28px_-30px_color-mix(in_oklab,var(--color-primary)_28%,transparent)]">
                   <Wallet className="text-primary" />
                   <AlertTitle>Cash on Delivery</AlertTitle>
-                  <AlertDescription className="[text-wrap:pretty]">
-                    Pay with cash when your order reaches you. We confirm everything server-side before it is locked in.
-                  </AlertDescription>
                 </Alert>
               </CardContent>
             </Card>
@@ -549,8 +534,8 @@ export default function CheckoutClient({ settings }) {
                     <CardTitle className={cn('mt-2 text-xl', styles.sectionTitle)}>Everything in your cart</CardTitle>
                   </div>
                   <span className={styles.summaryPill}>
-                    <strong>{cart.length}</strong>
-                    {cart.length === 1 ? 'item' : 'items'}
+                    <strong>{activeCart.length}</strong>
+                    {activeCart.length === 1 ? 'item' : 'items'}
                   </span>
                 </div>
                 <CardDescription className={styles.sectionDescription}>
@@ -561,7 +546,7 @@ export default function CheckoutClient({ settings }) {
 
               <CardContent>
                 <div className={cn('mb-6 max-h-[320px] overflow-y-auto pr-1', styles.summaryItems)}>
-                  {cart.map((item, index) => {
+                  {activeCart.map((item, index) => {
                     const itemPrice = item.discountedPrice != null ? item.discountedPrice : item.Price || item.price;
                     const lineTotal = formatPrice(itemPrice) * item.quantity;
 
@@ -617,23 +602,6 @@ export default function CheckoutClient({ settings }) {
                   {submitting ? <Loader2 className="animate-spin" data-icon="inline-start" /> : null}
                   {submitting ? 'Placing Order...' : 'Complete Order'}
                 </Button>
-
-                <div className="mt-4 grid gap-2 text-xs font-medium text-muted-foreground">
-                  <p className={cn('flex items-center justify-center gap-1.5 text-center', styles.trustNote)}>
-                    <ShieldCheck className="size-3.5 text-primary" />
-                    Securing your order with server-side confirmation
-                  </p>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    <div className="flex items-center justify-center gap-1.5 rounded-full bg-background/70 px-3 py-2">
-                      <Truck className="size-3.5 text-primary" />
-                      Nationwide delivery
-                    </div>
-                    <div className="flex items-center justify-center gap-1.5 rounded-full bg-background/70 px-3 py-2">
-                      <Clock3 className="size-3.5 text-primary" />
-                      2 to 3 working days
-                    </div>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>

@@ -19,7 +19,7 @@ import { getServerSession } from 'next-auth';
 import { Resend } from 'resend';
 import { generateOrderEmailHtml, generateCustomerOrderConfirmationHtml } from '@/lib/emailTemplates';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 const SETTINGS_KEY = 'site-settings';
 
@@ -86,13 +86,23 @@ async function assertAdmin(permission) {
 }
 
 async function sendOrderEmails({ order, customerName, userEmail }) {
+  if (!resend) {
+    console.warn(`Skipping order email for ${order.orderId}: RESEND_API_KEY is not configured.`);
+    return;
+  }
+
   try {
+    const settings = await Settings.findOne({ singletonKey: SETTINGS_KEY }).lean();
     const adminRecipients = getConfiguredAdminEmails();
+    const fromAddress = process.env.RESEND_FROM || 'Aam Samaan <onboarding@resend.dev>';
+    const replyTo = settings?.supportEmail ? [settings.supportEmail] : undefined;
+
     const adminEmailResult = await resend.emails.send({
-      from: 'Aam Samaan <onboarding@resend.dev>',
+      from: fromAddress,
       to: adminRecipients.length > 0 ? adminRecipients : ['123raza83@gmail.com'],
       subject: `New Order Received - ${customerName}`,
       html: generateOrderEmailHtml(order),
+      replyTo,
       headers: {
         'X-Click-Tracking': 'off',
       },
@@ -101,10 +111,11 @@ async function sendOrderEmails({ order, customerName, userEmail }) {
 
     if (userEmail) {
       const customerEmailResult = await resend.emails.send({
-        from: 'Aam Samaan <onboarding@resend.dev>',
+        from: fromAddress,
         to: userEmail,
         subject: `Thank You for Your Order! - ${order.orderId}`,
         html: generateCustomerOrderConfirmationHtml(order),
+        replyTo,
         headers: {
           'X-Click-Tracking': 'off',
         },

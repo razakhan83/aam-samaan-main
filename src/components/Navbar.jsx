@@ -119,10 +119,10 @@ function NavbarContent({
   announcementBarText = '',
   announcementBarMessages = [],
 }) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-  const { cartCount = 0 } = useCartItems() || {};
+  const { cartCount = 0, isInitialized = false } = useCartItems() || {};
   const { activeCategory = 'all', isSidebarOpen = false } = useCartUi() || {};
   const {
     setActiveCategory = () => {},
@@ -214,6 +214,8 @@ function NavbarContent({
     'nav-icon-button relative rounded-2xl border border-border/60 bg-card/85 p-0 text-foreground transition-[transform,background-color,border-color,color] duration-200 ease-[cubic-bezier(0.2,0,0,1)] hover:border-primary/18 hover:bg-background hover:text-foreground active:scale-[0.96]';
   const announcementItems = normalizeAnnouncementItems(announcementBarMessages, announcementBarText);
   const showAnnouncementBar = announcementBarEnabled && announcementItems.length > 0;
+  const safeCartCount = isInitialized ? cartCount : 0;
+  const isSessionReady = status !== 'loading';
 
   return (
     <div
@@ -322,14 +324,27 @@ function NavbarContent({
             <span className="relative flex size-5 items-center justify-center">
               <ShoppingBag className="size-[1.05rem]" />
             </span>
-            {cartCount > 0 ? (
+            {safeCartCount > 0 ? (
               <span className="absolute -right-2 -top-2 inline-flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold leading-none text-primary-foreground tabular-nums shadow-sm">
-                {cartCount}
+                {safeCartCount}
               </span>
             ) : null}
           </Button>
 
-          {session ? (
+          {!isSessionReady ? (
+            <div className="hidden md:block">
+              <Button
+                variant="ghost"
+                size="icon-lg"
+                className={`nav-profile-button overflow-hidden ${navActionButtonClass}`}
+                aria-label="Account"
+              >
+                <span className="relative flex size-5 items-center justify-center">
+                  <User className="size-5" />
+                </span>
+              </Button>
+            </div>
+          ) : session ? (
             <div className="hidden md:block">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

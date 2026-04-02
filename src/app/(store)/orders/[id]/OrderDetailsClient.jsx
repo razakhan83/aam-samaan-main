@@ -18,8 +18,25 @@ const STATUS_COLORS = {
   Returned: 'bg-muted text-muted-foreground border-border',
 };
 
+const orderDateFormatter = new Intl.DateTimeFormat('en-PK', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'Asia/Karachi',
+});
+
+const orderTimeFormatter = new Intl.DateTimeFormat('en-PK', {
+  hour: '2-digit',
+  minute: '2-digit',
+  timeZone: 'Asia/Karachi',
+});
+
 export default function OrderDetailsClient({ order }) {
   if (!order) return null;
+
+  const orderCreatedAt = new Date(order.createdAt);
+  const createdDateLabel = orderDateFormatter.format(orderCreatedAt);
+  const createdTimeLabel = orderTimeFormatter.format(orderCreatedAt);
 
   return (
     <div className="surface-card overflow-hidden rounded-xl border border-border shadow-md">
@@ -39,11 +56,11 @@ export default function OrderDetailsClient({ order }) {
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <div className="flex items-center gap-1">
               <Calendar className="size-3" />
-              {new Date(order.createdAt).toLocaleDateString()}
+              {createdDateLabel}
             </div>
             <div className="flex items-center gap-1">
               <Clock className="size-3" />
-              {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              {createdTimeLabel}
             </div>
           </div>
         </div>
@@ -160,7 +177,7 @@ export default function OrderDetailsClient({ order }) {
       
       {/* Footer text */}
       <div className="p-6 bg-muted/10 border-t border-border text-center text-xs text-muted-foreground">
-        Order created on {new Date(order.createdAt).toLocaleDateString()} at {new Date(order.createdAt).toLocaleTimeString()}
+        Order created on {createdDateLabel} at {createdTimeLabel}
       </div>
     </div>
   );

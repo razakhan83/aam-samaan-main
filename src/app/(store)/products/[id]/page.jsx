@@ -1,6 +1,7 @@
 import { Suspense, ViewTransition } from 'react';
 import { BadgeCheck, PackageCheck, Truck } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import Script from 'next/script';
 
 import CategoryProductSlider from '@/components/CategoryProductSlider';
 import ProductCard from '@/components/ProductCard';
@@ -293,7 +294,8 @@ function ProductHeroSection({ product, settings, reviewSummary }) {
         category={categoryLabel || 'Product'}
         value={price}
       />
-      <script
+      <Script
+        id={`product-jsonld-${product.slug || product._id}`}
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(productJsonLd).replace(/</g, '\\u003c'),

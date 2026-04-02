@@ -43,7 +43,7 @@ const formatPriceLabel = (raw) => `Rs. ${formatPrice(raw).toLocaleString('en-PK'
 const EXIT_ANIMATION_MS = 180;
 
 export default function CartDrawer({ whatsappNumber = '', storeName = 'Aam Samaan' }) {
-  const { cart } = useCartItems();
+  const { cart, isInitialized = false } = useCartItems();
   const { isCartOpen } = useCartUi();
   const { updateQuantity, removeFromCart, clearCart, setIsCartOpen } = useCartActions();
   const [exitingItems, setExitingItems] = useState({});
@@ -60,7 +60,9 @@ export default function CartDrawer({ whatsappNumber = '', storeName = 'Aam Samaa
     };
   }, []);
 
-  const subtotal = cart.reduce((total, item) => {
+  const activeCart = isInitialized ? cart : [];
+
+  const subtotal = activeCart.reduce((total, item) => {
     const itemPrice = item.discountedPrice != null ? item.discountedPrice : formatPrice(item.Price || item.price);
     return total + itemPrice * item.quantity;
   }, 0);
@@ -88,7 +90,7 @@ export default function CartDrawer({ whatsappNumber = '', storeName = 'Aam Samaa
   function handleClearCart() {
     Object.values(removeTimersRef.current).forEach((timeoutId) => clearTimeout(timeoutId));
     removeTimersRef.current = {};
-    if (!cart.length || isClearingAll) return;
+    if (!activeCart.length || isClearingAll) return;
 
     setIsClearingAll(true);
     clearCart();
@@ -98,8 +100,8 @@ export default function CartDrawer({ whatsappNumber = '', storeName = 'Aam Samaa
   }
 
   function handleWhatsAppDirectCheckout() {
-    if (!cart.length) return;
-    const message = buildCartWhatsAppMessage({ items: cart, subtotal, storeName });
+    if (!activeCart.length) return;
+    const message = buildCartWhatsAppMessage({ items: activeCart, subtotal, storeName });
     const whatsappUrl = createWhatsAppUrl(whatsappNumber, message);
     if (!whatsappUrl) return;
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
@@ -115,13 +117,13 @@ export default function CartDrawer({ whatsappNumber = '', storeName = 'Aam Samaa
         <SheetHeader className="border-b border-border/70 px-5 pb-3 pt-5">
           <SheetTitle className="[text-wrap:balance]">Your Cart</SheetTitle>
           <SheetDescription className="[text-wrap:pretty]">
-            {cart.length ? `${cart.length} item${cart.length > 1 ? 's' : ''} ready for checkout.` : 'Add products to start your order.'}
+            {activeCart.length ? `${activeCart.length} item${activeCart.length > 1 ? 's' : ''} ready for checkout.` : 'Add products to start your order.'}
           </SheetDescription>
         </SheetHeader>
 
         <ScrollArea className="min-h-0 flex-1 px-4 py-3 md:px-5 md:py-4">
           <div className="flex flex-col gap-1.5">
-            {cart.length ? (
+            {activeCart.length ? (
               <>
                 <div className="flex items-center justify-between gap-3 px-1 py-0.5">
                   <p className="text-sm font-semibold text-foreground">Cart items</p>
@@ -136,7 +138,7 @@ export default function CartDrawer({ whatsappNumber = '', storeName = 'Aam Samaa
                     {isClearingAll ? 'Clearing...' : 'Clear All'}
                   </Button>
                 </div>
-                {cart.map((item, index) => {
+                {activeCart.map((item, index) => {
                   const primaryImage = getPrimaryProductImage(item);
                   const primaryImageSrc = primaryImage?.url
                     ? optimizeCloudinaryUrl(primaryImage.url, CLOUDINARY_IMAGE_PRESETS.cartItem)
