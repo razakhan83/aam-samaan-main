@@ -1323,6 +1323,12 @@ export async function getAdminDashboardData() {
   startOfToday.setHours(0, 0, 0, 0);
   const startOfTomorrow = new Date(startOfToday);
   startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
+  const startOfLast7Days = new Date(startOfToday);
+  startOfLast7Days.setDate(startOfLast7Days.getDate() - 6);
+  const startOfLast30Days = new Date(startOfToday);
+  startOfLast30Days.setDate(startOfLast30Days.getDate() - 29);
+
+  const dayFormatter = new Intl.DateTimeFormat('en-PK', { weekday: 'short' });
 
   const [
     totalOrders,
@@ -1333,6 +1339,7 @@ export async function getAdminDashboardData() {
     customersAgg,
     recentOrders,
     dailyConfirmedOrders,
+    orders,
   ] = await Promise.all([
     Order.countDocuments(),
     Order.countDocuments({ status: 'Pending' }),
@@ -1364,7 +1371,84 @@ export async function getAdminDashboardData() {
       status: { $in: ['Confirmed', 'Pending'] },
       createdAt: { $gte: startOfToday, $lt: startOfTomorrow },
     }),
+    Order.find({}).sort({ createdAt: -1 }).lean(),
   ]);
+
+  const safeOrders = orders.map(toOrderSummaryRow);
+  const last7DaysRevenue = Array.from({ length: 7 }).map((_, offset) => {
+    const dayStart = new Date(startOfLast7Days);
+    dayStart.setDate(startOfLast7Days.getDate() + offset);
+    const dayEnd = new Date(dayStart);
+    dayEnd.setDate(dayEnd.getDate() + 1);
+
+    const dayOrders = safeOrders.filter((order) => {
+      const createdAt = order.createdAt ? new Date(order.createdAt) : null;
+      return createdAt && createdAt >= dayStart && createdAt < dayEnd;
+    });
+
+    return {
+      label: dayFormatter.format(dayStart),
+      revenue: dayOrders.reduce((sum, order) => sum + Number(order.totalAmount || 0), 0),
+      orders: dayOrders.length,
+    };
+  });
+
+  const ordersLast30Days = safeOrders.filter((order) => {
+    const createdAt = order.createdAt ? new Date(order.createdAt) : null;
+    return createdAt && createdAt >= startOfLast30Days;
+  });
+
+  const revenueLast30Days = ordersLast30Days.reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
+  const revenueToday = safeOrders
+    .filter((order) => {
+      const createdAt = order.createdAt ? new Date(order.createdAt) : null;
+      return createdAt && createdAt >= startOfToday && createdAt < startOfTomorrow;
+    })
+    .reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
+  const averageOrderValue = totalOrders > 0 ? Number(revenueAgg[0]?.total || 0) / totalOrders : 0;
+
+  const statusMap = new Map();
+  safeOrders.forEach((order) => {
+    const key = order.status || 'Unknown';
+    statusMap.set(key, (statusMap.get(key) || 0) + 1);
+  });
+
+  const statusBreakdown = Array.from(statusMap.entries())
+    .map(([status, count]) => ({
+      status,
+      count,
+      share: totalOrders > 0 ? count / totalOrders : 0,
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  const topProductsMap = new Map();
+  safeOrders.forEach((order) => {
+    (order.items || []).forEach((item) => {
+      const key = String(item.productId || item.name || '').trim();
+      if (!key) return;
+
+      const previous = topProductsMap.get(key) || {
+        id: key,
+        name: item.name || 'Product',
+        unitsSold: 0,
+        revenue: 0,
+      };
+
+      previous.unitsSold += Number(item.quantity || 0);
+      previous.revenue += Number(item.price || 0) * Number(item.quantity || 0);
+      topProductsMap.set(key, previous);
+    });
+  });
+
+  const topProducts = Array.from(topProductsMap.values())
+    .sort((a, b) => {
+      if (b.unitsSold !== a.unitsSold) return b.unitsSold - a.unitsSold;
+      return b.revenue - a.revenue;
+    })
+    .slice(0, 5);
+
+  const bestDay = [...last7DaysRevenue].sort((a, b) => b.revenue - a.revenue)[0] || null;
+  const lowStockProducts = Math.max(0, totalProducts - liveProducts);
 
   return {
     summary: {
@@ -1375,7 +1459,18 @@ export async function getAdminDashboardData() {
       totalRevenue: Number(revenueAgg[0]?.total || 0),
       totalCustomers: Number(customersAgg[0]?.count || 0),
       dailyConfirmedOrders: Number(dailyConfirmedOrders || 0),
+      averageOrderValue,
+      revenueToday,
+      revenueLast30Days,
+      ordersLast30Days: ordersLast30Days.length,
+      lowStockProducts,
     },
+    trend: {
+      last7DaysRevenue,
+      bestDay,
+    },
+    statusBreakdown,
+    topProducts,
     recentOrders: recentOrders.map(toOrderSummaryRow),
   };
 }

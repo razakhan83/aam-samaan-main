@@ -317,6 +317,226 @@
     border: 1px solid #27272a !important;
   }
 
+  .admin-theme-light .admin-dashboard-hero,
+  .admin-theme-light.admin-shell .admin-dashboard-hero {
+    background:
+      radial-gradient(circle at top left, rgba(24, 24, 27, 0.05), transparent 42%),
+      linear-gradient(135deg, #ffffff, #f4f4f5);
+  }
+
+  .admin-theme-dark .admin-dashboard-hero,
+  .admin-theme-dark.admin-shell .admin-dashboard-hero {
+    background:
+      radial-gradient(circle at top left, rgba(255, 255, 255, 0.06), transparent 42%),
+      linear-gradient(135deg, #121212, #18181b);
+  }
+
+  .admin-theme-light .admin-dashboard-chip,
+  .admin-theme-light.admin-shell .admin-dashboard-chip {
+    background: rgba(255, 255, 255, 0.84);
+    border-color: #e4e4e7 !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-chip,
+  .admin-theme-dark.admin-shell .admin-dashboard-chip {
+    background: rgba(24, 24, 27, 0.92);
+    border-color: #27272a !important;
+  }
+
+  .admin-theme-light .admin-dashboard-eyebrow,
+  .admin-theme-light.admin-shell .admin-dashboard-eyebrow {
+    color: #52525b !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-eyebrow,
+  .admin-theme-dark.admin-shell .admin-dashboard-eyebrow {
+    color: #d4d4d8 !important;
+  }
+
+  .admin-theme-light .admin-dashboard-meter-track,
+  .admin-theme-light.admin-shell .admin-dashboard-meter-track {
+    background: #e4e4e7 !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-meter-track,
+  .admin-theme-dark.admin-shell .admin-dashboard-meter-track {
+    background: #27272a !important;
+  }
+
+  .admin-theme-light .admin-dashboard-meter-fill,
+  .admin-theme-light.admin-shell .admin-dashboard-meter-fill {
+    background: linear-gradient(90deg, #18181b, #3f3f46) !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-meter-fill,
+  .admin-theme-dark.admin-shell .admin-dashboard-meter-fill {
+    background: linear-gradient(90deg, #fafafa, #d4d4d8) !important;
+  }
+
+  .admin-theme-light .admin-dashboard-rank,
+  .admin-theme-light.admin-shell .admin-dashboard-rank {
+    background: #f4f4f5 !important;
+    border: 1px solid #e4e4e7;
+  }
+
+  .admin-theme-dark .admin-dashboard-rank,
+  .admin-theme-dark.admin-shell .admin-dashboard-rank {
+    background: #18181b !important;
+    border: 1px solid #27272a;
+  }
+
+  .admin-theme-light .admin-dashboard-watchitem,
+  .admin-theme-light.admin-shell .admin-dashboard-watchitem {
+    background: #fafafa !important;
+    border-color: #e4e4e7 !important;
+    color: #09090b !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-watchitem,
+  .admin-theme-dark.admin-shell .admin-dashboard-watchitem {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #fafafa !important;
+  }
+
+  .admin-theme-light .admin-dashboard-watchbadge,
+  .admin-theme-light.admin-shell .admin-dashboard-watchbadge {
+    background: #ffffff !important;
+    border-color: #d4d4d8 !important;
+    color: #18181b !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-watchbadge,
+  .admin-theme-dark.admin-shell .admin-dashboard-watchbadge {
+    background: #09090b !important;
+    border-color: #3f3f46 !important;
+    color: #fafafa !important;
+  }
+
+  .admin-theme-light .admin-dashboard-item,
+  .admin-theme-light.admin-shell .admin-dashboard-item {
+    background: #ffffff !important;
+    border-color: #e4e4e7 !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-item,
+  .admin-theme-dark.admin-shell .admin-dashboard-item {
+    background: #121212 !important;
+    border-color: #27272a !important;
+  }
+
+  .admin-theme-light .admin-dashboard-empty,
+  .admin-theme-light.admin-shell .admin-dashboard-empty {
+    background: #f4f4f5 !important;
+    border-color: #e4e4e7 !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-empty,
+  .admin-theme-dark.admin-shell .admin-dashboard-empty {
+    background: #18181b !important;
+    border-color: #27272a !important;
+  }
+
+  .admin-theme-light .admin-dashboard-stat-icon,
+  .admin-theme-light.admin-shell .admin-dashboard-stat-icon {
+    background: #f4f4f5 !important;
+    border: 1px solid #e4e4e7;
+    box-shadow: none;
+  }
+
+  .admin-theme-dark .admin-dashboard-stat-icon,
+  .admin-theme-dark.admin-shell .admin-dashboard-stat-icon {
+    background: #18181b !important;
+    border: 1px solid #27272a;
+    box-shadow: none;
+  }
+
+  .admin-theme-light .admin-dashboard-badge,
+  .admin-theme-light.admin-shell .admin-dashboard-badge {
+    background: #ffffff !important;
+    border-color: #d4d4d8 !important;
+    color: #27272a !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-badge,
+  .admin-theme-dark.admin-shell .admin-dashboard-badge {
+    background: #18181b !important;
+    border-color: #3f3f46 !important;
+    color: #fafafa !important;
+  }
+
+  .admin-theme-light .admin-dashboard-heading,
+  .admin-theme-light .admin-dashboard-value,
+  .admin-theme-light.admin-shell .admin-dashboard-heading,
+  .admin-theme-light.admin-shell .admin-dashboard-value {
+    color: #09090b !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-heading,
+  .admin-theme-dark .admin-dashboard-value,
+  .admin-theme-dark.admin-shell .admin-dashboard-heading,
+  .admin-theme-dark.admin-shell .admin-dashboard-value {
+    color: #fafafa !important;
+  }
+
+  .admin-theme-light .admin-dashboard-button,
+  .admin-theme-light.admin-shell .admin-dashboard-button {
+    background: #ffffff !important;
+    border-color: #d4d4d8 !important;
+    color: #18181b !important;
+    box-shadow: none !important;
+  }
+
+  .admin-theme-light .admin-dashboard-button:hover,
+  .admin-theme-light.admin-shell .admin-dashboard-button:hover {
+    background: #f4f4f5 !important;
+    border-color: #a1a1aa !important;
+    color: #09090b !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-button,
+  .admin-theme-dark.admin-shell .admin-dashboard-button {
+    background: #18181b !important;
+    border-color: #3f3f46 !important;
+    color: #fafafa !important;
+    box-shadow: none !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-button:hover,
+  .admin-theme-dark.admin-shell .admin-dashboard-button:hover {
+    background: #27272a !important;
+    border-color: #52525b !important;
+    color: #ffffff !important;
+  }
+
+  .admin-theme-light .admin-dashboard-button-primary,
+  .admin-theme-light.admin-shell .admin-dashboard-button-primary {
+    background: #18181b !important;
+    border-color: #18181b !important;
+    color: #ffffff !important;
+  }
+
+  .admin-theme-light .admin-dashboard-button-primary:hover,
+  .admin-theme-light.admin-shell .admin-dashboard-button-primary:hover {
+    background: #27272a !important;
+    border-color: #27272a !important;
+    color: #ffffff !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-button-primary,
+  .admin-theme-dark.admin-shell .admin-dashboard-button-primary {
+    background: #fafafa !important;
+    border-color: #fafafa !important;
+    color: #09090b !important;
+  }
+
+  .admin-theme-dark .admin-dashboard-button-primary:hover,
+  .admin-theme-dark.admin-shell .admin-dashboard-button-primary:hover {
+    background: #e4e4e7 !important;
+    border-color: #e4e4e7 !important;
+    color: #09090b !important;
+  }
+
   .admin-theme-light .admin-shell .bg-card,
   .admin-theme-light .admin-shell .bg-background,
   .admin-theme-light .admin-shell .bg-input {
